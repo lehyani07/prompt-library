@@ -1,0 +1,191 @@
+export type Locale = 'en' | 'ar'
+export type Direction = 'ltr' | 'rtl'
+
+export const dictionaries = {
+    en: {
+        common: {
+            appName: "Prompt Library",
+            explore: "Explore",
+            library: "Library",
+            signIn: "Sign In",
+            signUp: "Sign Up",
+            signOut: "Sign Out",
+            search: "Search prompts...",
+            loading: "Loading...",
+            error: "An error occurred",
+            save: "Save",
+            cancel: "Cancel",
+            edit: "Edit",
+            delete: "Delete",
+            create: "Create",
+            update: "Update",
+            copy: "Copy",
+            copied: "Copied!",
+            actions: "Actions",
+            allCategories: "All Categories",
+            reset: "Reset",
+            viewDetails: "View Details",
+            categories: "Categories",
+            home: "Home",
+        },
+        home: {
+            heroTitle: "Discover & Share AI Prompts",
+            heroSubtitle: "The best place to find, create, and organize prompts for ChatGPT, Claude, Midjourney, and more.",
+            getStarted: "Get Started",
+            learnMore: "Learn More",
+            features: {
+                title: "Why Prompt Library?",
+                share: {
+                    title: "Share with Community",
+                    desc: "Share your best prompts and help others unlock the power of AI."
+                },
+                organize: {
+                    title: "Organize Your Collection",
+                    desc: "Save your favorite prompts and organize them into collections."
+                },
+                discover: {
+                    title: "Discover New Ideas",
+                    desc: "Browse thousands of prompts created by the community."
+                }
+            }
+        },
+        auth: {
+            welcomeBack: "Welcome Back!",
+            signInSubtitle: "Sign in to continue to Prompt Library",
+            joinUs: "Join Us!",
+            signUpSubtitle: "Create your account to start exploring",
+            email: "Email Address",
+            password: "Password",
+            name: "Full Name",
+            forgotPassword: "Forgot password?",
+            orContinueWith: "Or continue with",
+            dontHaveAccount: "Don't have an account?",
+            alreadyHaveAccount: "Already have an account?",
+            createAccount: "Create Account",
+            signingIn: "Signing in...",
+            creatingAccount: "Creating account...",
+            passwordMinLength: "Must be at least 6 characters long",
+        },
+        prompt: {
+            new: "Create New Prompt",
+            newSubtitle: "Share your best prompts with the community.",
+            title: "Title",
+            category: "Category",
+            selectCategory: "Select a category",
+            description: "Description",
+            content: "Prompt Content",
+            isPublic: "Make this prompt public",
+            createdBy: "Created by",
+            ratings: "Ratings",
+            favorites: "Favorites",
+            noPrompts: "No prompts found.",
+            beFirst: "Be the first to create one!",
+            notFound: "Prompt not found",
+            private: "This prompt is private",
+        },
+        library: {
+            title: "My Library",
+            tabs: {
+                myPrompts: "My Prompts",
+                favorites: "Favorites",
+                collections: "Collections",
+            },
+            emptyPrompts: "You haven't created any prompts yet.",
+            emptyFavorites: "You haven't favorited any prompts yet.",
+            emptyCollections: "You haven't created any collections yet.",
+        }
+    },
+    ar: {
+        common: {
+            appName: "مكتبة البرومبت",
+            explore: "استكشف",
+            library: "مكتبتي",
+            signIn: "تسجيل الدخول",
+            signUp: "إنشاء حساب",
+            signOut: "تسجيل الخروج",
+            search: "ابحث عن برومبت...",
+            loading: "جاري التحميل...",
+            error: "حدث خطأ ما",
+            save: "حفظ",
+            cancel: "إلغاء",
+            edit: "تعديل",
+            delete: "حذف",
+            create: "إنشاء",
+            update: "تحديث",
+            copy: "نسخ",
+            copied: "تم النسخ!",
+            actions: "إجراءات",
+            allCategories: "كل التصنيفات",
+            reset: "إعادة تعيين",
+            viewDetails: "عرض التفاصيل",
+            categories: "التصنيفات",
+            home: "الرئيسية",
+        },
+        home: {
+            heroTitle: "اكتشف وشارك أوامر الذكاء الاصطناعي",
+            heroSubtitle: "أفضل مكان للعثور على، إنشاء، وتنظيم الأوامر لـ ChatGPT و Claude و Midjourney والمزيد.",
+            getStarted: "ابدأ الآن",
+            learnMore: "المزيد",
+            features: {
+                title: "لماذا مكتبة البرومبت؟",
+                share: {
+                    title: "شارك مع المجتمع",
+                    desc: "شارك أفضل الأوامر لديك وساعد الآخرين على الاستفادة من قوة الذكاء الاصطناعي."
+                },
+                organize: {
+                    title: "نظم مجموعتك",
+                    desc: "احفظ الأوامر المفضلة لديك ونظمها في مجموعات."
+                },
+                discover: {
+                    title: "اكتشف أفكاراً جديدة",
+                    desc: "تصفح آلاف الأوامر التي أنشأها المجتمع."
+                }
+            }
+        },
+        auth: {
+            welcomeBack: "أهلاً بعودتك!",
+            signInSubtitle: "سجل الدخول للمتابعة إلى مكتبة البرومبت",
+            joinUs: "انضم إلينا!",
+            signUpSubtitle: "أنشئ حسابك لتبدأ الاستكشاف",
+            email: "البريد الإلكتروني",
+            password: "كلمة المرور",
+            name: "الاسم الكامل",
+            forgotPassword: "نسيت كلمة المرور؟",
+            orContinueWith: "أو تابع باستخدام",
+            dontHaveAccount: "ليس لديك حساب؟",
+            alreadyHaveAccount: "لديك حساب بالفعل؟",
+            createAccount: "إنشاء حساب",
+            signingIn: "جاري تسجيل الدخول...",
+            creatingAccount: "جاري إنشاء الحساب...",
+            passwordMinLength: "يجب أن تكون 6 أحرف على الأقل",
+        },
+        prompt: {
+            new: "إنشاء برومبت جديد",
+            newSubtitle: "شارك أفضل الأوامر لديك مع المجتمع.",
+            title: "العنوان",
+            category: "التصنيف",
+            selectCategory: "اختر تصنيفاً",
+            description: "الوصف",
+            content: "محتوى البرومبت",
+            isPublic: "اجعل هذا البرومبت عاماً",
+            createdBy: "بواسطة",
+            ratings: "التقييمات",
+            favorites: "المفضلة",
+            noPrompts: "لم يتم العثور على أي برومبت.",
+            beFirst: "كن أول من ينشئ واحداً!",
+            notFound: "البرومبت غير موجود",
+            private: "هذا البرومبت خاص",
+        },
+        library: {
+            title: "مكتبتي",
+            tabs: {
+                myPrompts: "أوامري",
+                favorites: "المفضلة",
+                collections: "المجموعات",
+            },
+            emptyPrompts: "لم تقم بإنشاء أي برومبت بعد.",
+            emptyFavorites: "لم تقم بإضافة أي برومبت للمفضلة بعد.",
+            emptyCollections: "لم تقم بإنشاء أي مجموعات بعد.",
+        }
+    }
+}

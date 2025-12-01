@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors - Primary */
+  --color-primary-base: #2D8CFF;
+  --color-primary-hover: #2575D9;
+  --color-primary-pressed: #1C5CAD;
+
+  /* Colors - Secondary */
+  --color-secondary-base: #9B5CFF;
+  --color-secondary-hover: #8447E0;
+  --color-secondary-pressed: #6732B5;
+
+  /* Colors - Accent */
+  --color-accent-success: #00C48C;
+  --color-accent-warning: #FFB020;
+  --color-accent-error: #FF5A5F;
+  --color-accent-info: #2D8CFF;
+
+  /* Colors - Neutral */
+  --color-neutral-bg-page: #F5F7FB;
+  --color-neutral-bg-card: #FFFFFF;
+  --color-neutral-bg-soft: #F0F3F9;
+  --color-neutral-border-subtle: #E1E4EC;
+  --color-neutral-text-primary: #101320;
+  --color-neutral-text-secondary: #6F7483;
+  --color-neutral-text-on-primary: #FFFFFF;
+  --color-neutral-icon-muted: #B4B9C7;
+
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* Shadows */
+  --shadow-card: 0 12px 30px -10px rgba(16, 19, 32, 0.08);
+  --shadow-floating: 0 18px 40px -12px rgba(12, 19, 38, 0.16);
+  --shadow-button: 0 4px 12px -2px rgba(8, 20, 60, 0.28);
+
+  /* Fonts */
+  --font-sans: 'Inter', 'SF Pro Text', 'Roboto', system-ui, sans-serif;
+}
+
+/* Base Styles */
+body {
+  background-color: var(--color-neutral-bg-page);
+  color: var(--color-neutral-text-primary);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+}
