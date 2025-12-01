@@ -204,24 +204,6 @@ export default function HomeContent({ session, featuredPrompts }: HomeContentPro
                     </div>
                 </div>
             </section>
-
-            {/* CTA Section */}
-            <section className="py-20 bg-linear-to-br from-primary-base/10 via-secondary-base/10 to-purple-100">
-                <div className="mx-auto max-w-4xl px-6 text-center">
-                    <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-base to-secondary-base mb-6">
-                        Ready to Get Started?
-                    </h2>
-                    <p className="text-xl text-neutral-text-secondary mb-8">
-                        Join thousands of users creating and sharing amazing prompts
-                    </p>
-                    <Link
-                        href={session ? "/explore" : "/auth/signup"}
-                        className="inline-block px-10 py-4 text-lg font-bold bg-linear-to-r from-primary-base to-secondary-base text-white rounded-lg shadow-button hover:shadow-floating transition-all duration-300 hover:scale-105"
-                    >
-                        {session ? t.common.explore : t.home.getStarted}
-                    </Link>
-                </div>
-            </section>
         </div>
     )
 }

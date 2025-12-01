@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 import { auth } from "@/auth";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export default async function RootLayout({
   children,
@@ -36,6 +37,7 @@ export default async function RootLayout({
         <LanguageProvider>
           <Header user={session?.user} />
           {children}
+          <Footer />
         </LanguageProvider>
       </body>
     </html>

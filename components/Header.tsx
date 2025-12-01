@@ -23,11 +23,8 @@ export default function Header({ user }: HeaderProps) {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <div className="shrink-0 flex items-center">
-                        <Link href="/" className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary-base to-secondary-base flex items-center justify-center text-white font-bold text-xl">
-                                P
-                            </div>
-                            <span className="font-bold text-xl bg-clip-text text-transparent bg-linear-to-r from-primary-base to-secondary-base hidden sm:block">
+                        <Link href="/" className="flex items-center">
+                            <span className="font-bold text-xl bg-clip-text text-transparent bg-linear-to-r from-primary-base to-secondary-base">
                                 Prompt Library
                             </span>
                         </Link>
@@ -37,13 +34,13 @@ export default function Header({ user }: HeaderProps) {
                     <nav className="hidden md:flex items-center gap-8">
                         <Link
                             href="/"
-                            className="text-neutral-text-secondary hover:text-primary-base font-medium transition-colors"
+                            className="text-primary-base hover:text-primary-hover font-semibold transition-colors"
                         >
                             {t.common.home}
                         </Link>
                         <Link
                             href="/explore"
-                            className="text-neutral-text-secondary hover:text-primary-base font-medium transition-colors"
+                            className="text-primary-base hover:text-primary-hover font-semibold transition-colors"
                         >
                             {t.common.explore || 'Explore'}
                         </Link>
@@ -59,14 +56,6 @@ export default function Header({ user }: HeaderProps) {
 
                     {/* Right Side Actions */}
                     <div className="hidden md:flex items-center gap-4">
-                        {/* Language Switcher */}
-                        <button
-                            onClick={toggleLanguage}
-                            className="p-2 text-neutral-text-secondary hover:text-primary-base transition-colors rounded-lg hover:bg-neutral-bg-soft"
-                            aria-label="Switch Language"
-                        >
-                            {language === 'en' ? '🇺🇸 English' : '🇸🇦 العربية'}
-                        </button>
 
                         {/* Auth Buttons */}
                         {user ? (
@@ -97,6 +86,33 @@ export default function Header({ user }: HeaderProps) {
                                 </Link>
                             </div>
                         )}
+
+                        {/* Language Toggle Switch */}
+                        <button
+                            onClick={toggleLanguage}
+                            className="relative inline-flex h-9 w-20 items-center rounded-full bg-gradient-to-r from-primary-base/20 to-secondary-base/20 border border-primary-base/30 transition-all hover:from-primary-base/30 hover:to-secondary-base/30 focus:outline-none focus:ring-2 focus:ring-primary-base focus:ring-offset-2 shrink-0 my-auto"
+                            aria-label="Switch Language"
+                        >
+                            {/* EN Label */}
+                            <span className={`absolute start-2 text-xs font-semibold transition-all z-10 ${language === 'en' ? 'text-white' : 'text-primary-base'
+                                }`}>
+                                EN
+                            </span>
+
+                            {/* Sliding Background */}
+                            <span
+                                className={`absolute top-1 h-7 w-9 rounded-full bg-gradient-to-r from-primary-base to-secondary-base shadow-md transition-all ${language === 'ar'
+                                    ? 'end-1 start-auto'
+                                    : 'start-1 end-auto'
+                                    }`}
+                            />
+
+                            {/* AR Label */}
+                            <span className={`absolute end-2 text-xs font-semibold transition-all z-10 ${language === 'ar' ? 'text-white' : 'text-primary-base'
+                                }`}>
+                                AR
+                            </span>
+                        </button>
                     </div>
 
                     {/* Mobile Menu Button */}
