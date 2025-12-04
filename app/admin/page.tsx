@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import StatsCard from "@/components/admin/StatsCard"
+import DashboardContent from "@/components/admin/DashboardContent"
 
 export const metadata = {
     title: "Admin Dashboard",
@@ -40,25 +40,14 @@ export default async function AdminDashboard() {
     ])
 
     return (
-        <div className="space-y-8">
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatsCard
-                    title="Total Users"
-                    value={totalUsers}
-                    change={`+${recentUsers} this week`}
-                    icon="users"
-                />
-                <StatsCard
-                    title="Total Prompts"
-                    value={totalPrompts}
-                    change={`+${recentPrompts} this week`}
-                    icon="document"
-                />
-                <StatsCard title="Public Prompts" value={publicPrompts} icon="globe" />
-                <StatsCard title="Total Ratings" value={totalRatings} icon="star" />
-                <StatsCard title="Total Favorites" value={totalFavorites} icon="star" />
-            </div>
-        </div>
+        <DashboardContent
+            totalUsers={totalUsers}
+            totalPrompts={totalPrompts}
+            publicPrompts={publicPrompts}
+            totalRatings={totalRatings}
+            totalFavorites={totalFavorites}
+            recentUsers={recentUsers}
+            recentPrompts={recentPrompts}
+        />
     )
 }

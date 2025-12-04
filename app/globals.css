@@ -52,3 +52,8 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* Admin pages - dark background */
+body.admin-page {
+  background-color: #111827;
+}

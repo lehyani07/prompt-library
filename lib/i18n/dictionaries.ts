@@ -179,6 +179,125 @@ export const dictionaries = {
             namePlaceholder: "Your Name",
             emailPlaceholder: "you@example.com",
             sendMessage: "Send Message"
+        },
+        admin: {
+            sidebar: {
+                panel: "Admin Panel",
+                dashboard: "Dashboard",
+                users: "Users",
+                prompts: "Prompts",
+                categories: "Categories",
+                analytics: "Analytics",
+                settings: "Settings",
+                notifications: "Notifications",
+                backup: "Backup",
+                logs: "Logs"
+            },
+            header: {
+                backToSite: "Back to Site",
+                signOut: "Sign Out"
+            },
+            dashboard: {
+                title: "Dashboard",
+                totalUsers: "Total Users",
+                totalPrompts: "Total Prompts",
+                publicPrompts: "Public Prompts",
+                totalRatings: "Total Ratings",
+                totalFavorites: "Total Favorites",
+                thisWeek: "this week"
+            },
+            users: {
+                title: "Users Management",
+                user: "User",
+                role: "Role",
+                status: "Status",
+                prompts: "Prompts",
+                joined: "Joined",
+                actions: "Actions",
+                noName: "No Name",
+                ban: "Ban",
+                activate: "Activate",
+                roles: {
+                    user: "User",
+                    moderator: "Moderator",
+                    admin: "Admin"
+                },
+                statuses: {
+                    active: "ACTIVE",
+                    banned: "BANNED",
+                    inactive: "INACTIVE"
+                }
+            },
+            prompts: {
+                title: "Prompts Management",
+                titleColumn: "Title",
+                author: "Author",
+                category: "Category",
+                status: "Status",
+                stats: "Stats",
+                created: "Created",
+                actions: "Actions",
+                unknown: "Unknown",
+                uncategorized: "Uncategorized",
+                public: "Public",
+                private: "Private",
+                delete: "Delete",
+                deleteConfirm: "Are you sure you want to delete this prompt?",
+                noPrompts: "No prompts found",
+                showingResults: "Showing {from} to {to} of {total} results"
+            },
+            categories: {
+                title: "Categories Management",
+                name: "Name",
+                slug: "Slug",
+                description: "Description",
+                prompts: "Prompts"
+            },
+            analytics: {
+                title: "Analytics",
+                totalViews: "Total Views",
+                totalCopies: "Total Copies",
+                averageRating: "Average Rating",
+                topPromptsByViews: "Top Prompts by Views",
+                topCategories: "Top Categories",
+                views: "views",
+                copies: "copies",
+                prompts: "prompts"
+            },
+            settings: {
+                title: "Settings",
+                siteName: "Site Name",
+                siteDescription: "Site Description",
+                allowRegistration: "Allow new user registration",
+                requireEmailVerification: "Require email verification",
+                moderatePrompts: "Moderate prompts before publishing",
+                saveSettings: "Save Settings",
+                settingsSaved: "Settings saved successfully!"
+            },
+            notifications: {
+                title: "Notifications",
+                noNotifications: "No new notifications"
+            },
+            backup: {
+                title: "Database Backup",
+                createBackup: "Create Backup",
+                creating: "Creating...",
+                backupCreated: "Backup created successfully!",
+                backupFailed: "Failed to create backup",
+                filename: "Filename",
+                size: "Size",
+                created: "Created",
+                actions: "Actions",
+                download: "Download",
+                delete: "Delete"
+            },
+            logs: {
+                title: "System Logs",
+                timestamp: "Timestamp",
+                level: "Level",
+                message: "Message",
+                user: "User"
+            }
         }
     },
     ar: {
@@ -358,6 +477,125 @@ export const dictionaries = {
             namePlaceholder: "اسمك",
             emailPlaceholder: "you@example.com",
             sendMessage: "إرسال الرسالة"
+        },
+        admin: {
+            sidebar: {
+                panel: "لوحة الأدمن",
+                dashboard: "لوحة التحكم",
+                users: "المستخدمون",
+                prompts: "البرومبتات",
+                categories: "التصنيفات",
+                analytics: "التحليلات",
+                settings: "الإعدادات",
+                notifications: "الإشعارات",
+                backup: "النسخ الاحتياطي",
+                logs: "السجلات"
+            },
+            header: {
+                backToSite: "العودة للموقع",
+                signOut: "تسجيل الخروج"
+            },
+            dashboard: {
+                title: "لوحة التحكم",
+                totalUsers: "إجمالي المستخدمين",
+                totalPrompts: "إجمالي البرومبتات",
+                publicPrompts: "البرومبتات العامة",
+                totalRatings: "إجمالي التقييمات",
+                totalFavorites: "إجمالي المفضلة",
+                thisWeek: "هذا الأسبوع"
+            },
+            users: {
+                title: "إدارة المستخدمين",
+                user: "المستخدم",
+                role: "الدور",
+                status: "الحالة",
+                prompts: "البرومبتات",
+                joined: "تاريخ الانضمام",
+                actions: "الإجراءات",
+                noName: "بدون اسم",
+                ban: "حظر",
+                activate: "تفعيل",
+                roles: {
+                    user: "مستخدم",
+                    moderator: "مشرف",
+                    admin: "أدمن"
+                },
+                statuses: {
+                    active: "نشط",
+                    banned: "محظور",
+                    inactive: "غير نشط"
+                }
+            },
+            prompts: {
+                title: "إدارة البرومبتات",
+                titleColumn: "العنوان",
+                author: "المؤلف",
+                category: "التصنيف",
+                status: "الحالة",
+                stats: "الإحصائيات",
+                created: "تاريخ الإنشاء",
+                actions: "الإجراءات",
+                unknown: "غير معروف",
+                uncategorized: "غير مصنف",
+                public: "عام",
+                private: "خاص",
+                delete: "حذف",
+                deleteConfirm: "هل أنت متأكد من حذف هذا البرومبت؟",
+                noPrompts: "لم يتم العثور على أي برومبت",
+                showingResults: "عرض {from} إلى {to} من {total} نتيجة"
+            },
+            categories: {
+                title: "إدارة التصنيفات",
+                name: "الاسم",
+                slug: "الرابط",
+                description: "الوصف",
+                prompts: "البرومبتات"
+            },
+            analytics: {
+                title: "التحليلات",
+                totalViews: "إجمالي المشاهدات",
+                totalCopies: "إجمالي النسخ",
+                averageRating: "متوسط التقييم",
+                topPromptsByViews: "أفضل البرومبتات حسب المشاهدات",
+                topCategories: "أفضل التصنيفات",
+                views: "مشاهدة",
+                copies: "نسخة",
+                prompts: "برومبت"
+            },
+            settings: {
+                title: "الإعدادات",
+                siteName: "اسم الموقع",
+                siteDescription: "وصف الموقع",
+                allowRegistration: "السماح بتسجيل مستخدمين جدد",
+                requireEmailVerification: "يتطلب التحقق من البريد الإلكتروني",
+                moderatePrompts: "مراجعة البرومبتات قبل النشر",
+                saveSettings: "حفظ الإعدادات",
+                settingsSaved: "تم حفظ الإعدادات بنجاح!"
+            },
+            notifications: {
+                title: "الإشعارات",
+                noNotifications: "لا توجد إشعارات جديدة"
+            },
+            backup: {
+                title: "نسخ احتياطي لقاعدة البيانات",
+                createBackup: "إنشاء نسخة احتياطية",
+                creating: "جاري الإنشاء...",
+                backupCreated: "تم إنشاء النسخة الاحتياطية بنجاح!",
+                backupFailed: "فشل إنشاء النسخة الاحتياطية",
+                filename: "اسم الملف",
+                size: "الحجم",
+                created: "تاريخ الإنشاء",
+                actions: "الإجراءات",
+                download: "تحميل",
+                delete: "حذف"
+            },
+            logs: {
+                title: "سجلات النظام",
+                timestamp: "الوقت",
+                level: "المستوى",
+                message: "الرسالة",
+                user: "المستخدم"
+            }
         }
     }
 }

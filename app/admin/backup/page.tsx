@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from "react"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 export default function BackupPage() {
+    const { t } = useLanguage()
     const [isCreating, setIsCreating] = useState(false)
 
     const handleCreateBackup = async () => {
@@ -10,9 +12,9 @@ export default function BackupPage() {
         try {
             // TODO: Implement actual backup creation
             await new Promise(resolve => setTimeout(resolve, 2000))
-            alert("Backup created successfully!")
+            alert(t.admin.backup.backupCreated)
         } catch (error) {
-            alert("Failed to create backup")
+            alert(t.admin.backup.backupFailed)
         } finally {
             setIsCreating(false)
         }
@@ -28,13 +30,13 @@ export default function BackupPage() {
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-900">Database Backup</h1>
+                <h1 className="text-3xl font-bold text-gray-900">{t.admin.backup.title}</h1>
                 <button
                     onClick={handleCreateBackup}
                     disabled={isCreating}
                     className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                 >
-                    {isCreating ? 'Creating...' : 'Create Backup'}
+                    {isCreating ? t.admin.backup.creating : t.admin.backup.createBackup}
                 </button>
             </div>
 
@@ -42,10 +44,10 @@ export default function BackupPage() {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Filename</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.backup.filename}</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.backup.size}</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.backup.created}</th>
+                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.backup.actions}</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -62,10 +64,10 @@ export default function BackupPage() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button className="text-indigo-600 hover:text-indigo-900 mr-4">
-                                        Download
+                                        {t.admin.backup.download}
                                     </button>
                                     <button className="text-red-600 hover:text-red-900">
-                                        Delete
+                                        {t.admin.backup.delete}
                                     </button>
                                 </td>
                             </tr>

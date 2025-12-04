@@ -1,22 +1,32 @@
 import { prisma } from "@/lib/prisma"
-import UsersTable from "@/components/admin/UsersTable"
+import UsersPageContent from "@/components/admin/UsersPageContent"
+import { Prisma } from "@prisma/client"
 
 export default async function UsersPage({
     searchParams
 }: {
-    searchParams: { role?: string; status?: string; search?: string }
+    searchParams: Promise<{ role?: string; status?: string; search?: string }>
 }) {
+    const params = await searchParams
+    const where: Prisma.UserWhereInput = {}
+    
+    if (params.role) {
+        where.role = params.role
+    }
+    
+    if (params.status) {
+        where.status = params.status
+    }
+    
+    if (params.search) {
+        where.OR = [
+            { name: { contains: params.search } },
+            { email: { contains: params.search } }
+        ]
+    }
+
     const users = await prisma.user.findMany({
-        where: {
-            ...(searchParams.role && { role: searchParams.role as any }),
-            ...(searchParams.status && { status: searchParams.status as any }),
-            ...(searchParams.search && {
-                OR: [
-                    { name: { contains: searchParams.search } },
-                    { email: { contains: searchParams.search } }
-                ]
-            })
-        },
+        where,
         include: {
             _count: {
                 select: {
@@ -29,13 +39,5 @@ export default async function UsersPage({
         orderBy: { createdAt: 'desc' }
     })
 
-    return (
-        <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-gray-900">Users Management</h1>
-            </div>
-
-            <UsersTable users={users} />
-        </div>
-    )
+    return <UsersPageContent users={users} />
 }

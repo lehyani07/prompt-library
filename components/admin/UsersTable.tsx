@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 interface User {
     id: string
@@ -18,6 +19,7 @@ interface User {
 export default function UsersTable({ users }: { users: User[] }) {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
+    const { t } = useLanguage()
 
     async function updateUser(id: string, data: any) {
         setIsLoading(true)
@@ -35,17 +37,30 @@ export default function UsersTable({ users }: { users: User[] }) {
         }
     }
 
+    const getStatusTranslation = (status: string) => {
+        if (status === 'ACTIVE') return t.admin.users.statuses.active
+        if (status === 'BANNED') return t.admin.users.statuses.banned
+        return t.admin.users.statuses.inactive
+    }
+
+    const getRoleTranslation = (role: string) => {
+        if (role === 'USER') return t.admin.users.roles.user
+        if (role === 'MODERATOR') return t.admin.users.roles.moderator
+        if (role === 'ADMIN') return t.admin.users.roles.admin
+        return role
+    }
+
     return (
         <div className="bg-white shadow rounded-lg overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prompts</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.users.user}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.users.role}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.users.status}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.users.prompts}</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.users.joined}</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{t.admin.users.actions}</th>
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -57,7 +72,7 @@ export default function UsersTable({ users }: { users: User[] }) {
                                         {user.name?.[0] || user.email[0].toUpperCase()}
                                     </div>
                                     <div className="ml-4">
-                                        <div className="text-sm font-medium text-gray-900">{user.name || 'No Name'}</div>
+                                        <div className="text-sm font-medium text-gray-900">{user.name || t.admin.users.noName}</div>
                                         <div className="text-sm text-gray-500">{user.email}</div>
                                     </div>
                                 </div>
@@ -69,9 +84,9 @@ export default function UsersTable({ users }: { users: User[] }) {
                                     disabled={isLoading}
                                     className="text-sm border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 >
-                                    <option value="USER">User</option>
-                                    <option value="MODERATOR">Moderator</option>
-                                    <option value="ADMIN">Admin</option>
+                                    <option value="USER">{t.admin.users.roles.user}</option>
+                                    <option value="MODERATOR">{t.admin.users.roles.moderator}</option>
+                                    <option value="ADMIN">{t.admin.users.roles.admin}</option>
                                 </select>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -79,7 +94,7 @@ export default function UsersTable({ users }: { users: User[] }) {
                   ${user.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
                                         user.status === 'BANNED' ? 'bg-red-100 text-red-800' :
                                             'bg-yellow-100 text-yellow-800'}`}>
-                                    {user.status}
+                                    {getStatusTranslation(user.status)}
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -94,7 +109,7 @@ export default function UsersTable({ users }: { users: User[] }) {
                                     disabled={isLoading}
                                     className={`text-sm ${user.status === 'ACTIVE' ? 'text-red-600 hover:text-red-900' : 'text-green-600 hover:text-green-900'}`}
                                 >
-                                    {user.status === 'ACTIVE' ? 'Ban' : 'Activate'}
+                                    {user.status === 'ACTIVE' ? t.admin.users.ban : t.admin.users.activate}
                                 </button>
                             </td>
                         </tr>
