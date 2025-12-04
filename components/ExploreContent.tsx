@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useLanguage } from "@/lib/i18n/LanguageContext"
+import { getCategoryTranslation } from "@/lib/i18n/categoryTranslations"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState, useEffect } from "react"
 
@@ -12,7 +13,7 @@ interface ExploreContentProps {
 }
 
 export default function ExploreContent({ prompts, categories, session }: ExploreContentProps) {
-    const { t } = useLanguage()
+    const { t, language } = useLanguage()
     const router = useRouter()
     const searchParams = useSearchParams()
 
@@ -63,7 +64,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
             <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-primary-base/10 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-tl from-secondary-base/10 to-transparent rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
 
-            <main className="relative mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-12">
+            <main className="relative mx-auto max-w-7xl px-4 pt-8 pb-24 md:px-8 md:pt-12 md:pb-32">
 
                 {/* Header */}
                 <div className="mb-10 text-center">
@@ -73,8 +74,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                     <p className="mt-3 text-lg text-neutral-text-secondary max-w-2xl mx-auto">
                         {t.home.features.discover.desc}
                     </p>
-                    {/* Decorative line */}
-                    <div className="mt-6 h-px w-full max-w-3xl mx-auto bg-gradient-to-r from-transparent via-primary-base/30 to-transparent"></div>
+                    <div className="mx-auto mt-6 h-px w-1/2 bg-linear-to-r from-transparent via-neutral-border-subtle to-transparent"></div>
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-8">
@@ -111,7 +111,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                 <div className="space-y-2">
                                     <button
                                         onClick={() => handleCategoryChange("")}
-                                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${selectedCategory === ""
+                                        className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-all duration-200 ${selectedCategory === ""
                                             ? "bg-linear-to-r from-primary-base to-secondary-base text-white font-medium shadow-button"
                                             : "text-neutral-text-secondary hover:bg-primary-base/10 hover:text-primary-base"
                                             }`}
@@ -122,12 +122,12 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                         <button
                                             key={category.id}
                                             onClick={() => handleCategoryChange(category.slug)}
-                                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all duration-200 ${selectedCategory === category.slug
+                                            className={`w-full text-start px-3 py-2 rounded-lg text-sm transition-all duration-200 ${selectedCategory === category.slug
                                                 ? "bg-linear-to-r from-primary-base to-secondary-base text-white font-medium shadow-button"
                                                 : "text-neutral-text-secondary hover:bg-primary-base/10 hover:text-primary-base"
                                                 }`}
                                         >
-                                            {category.name}
+                                            {getCategoryTranslation(category.name, language)}
                                         </button>
                                     ))}
                                 </div>
@@ -185,7 +185,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                                     <div className="flex items-start justify-between mb-3">
                                                         {prompt.category && (
                                                             <span className="inline-flex items-center rounded-full bg-primary-base/10 px-2.5 py-0.5 text-xs font-medium text-primary-base">
-                                                                {prompt.category.name}
+                                                                {getCategoryTranslation(prompt.category.name, language)}
                                                             </span>
                                                         )}
                                                     </div>
@@ -218,11 +218,11 @@ export default function ExploreContent({ prompts, categories, session }: Explore
 
                             {/* Pagination Controls */}
                             {prompts.length > 0 && totalPages > 1 && (
-                                <div className="mt-8 flex items-center justify-center gap-2">
+                                <div className="relative z-20 mt-8 flex items-center justify-center gap-2">
                                     <button
                                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                                         disabled={currentPage === 1}
-                                        className="px-4 py-2 rounded-lg bg-white border border-neutral-border-subtle text-neutral-text-primary font-medium hover:bg-primary-base hover:text-white hover:border-primary-base transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-neutral-text-primary"
+                                        className="px-4 py-2 rounded-lg bg-white border border-neutral-border-subtle text-neutral-text-primary font-medium hover:bg-primary-base hover:text-white hover:border-primary-base transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-neutral-text-primary shadow-sm"
                                     >
                                         ← {t.common.prev}
                                     </button>
@@ -232,7 +232,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                             <button
                                                 key={page}
                                                 onClick={() => setCurrentPage(page)}
-                                                className={`w-10 h-10 rounded-lg font-medium transition-all ${currentPage === page
+                                                className={`w-10 h-10 rounded-lg font-medium transition-all shadow-sm ${currentPage === page
                                                     ? 'bg-linear-to-r from-primary-base to-secondary-base text-white shadow-button'
                                                     : 'bg-white border border-neutral-border-subtle text-neutral-text-secondary hover:bg-primary-base/10 hover:text-primary-base hover:border-primary-base/30'
                                                     }`}
@@ -245,7 +245,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                     <button
                                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                                         disabled={currentPage === totalPages}
-                                        className="px-4 py-2 rounded-lg bg-white border border-neutral-border-subtle text-neutral-text-primary font-medium hover:bg-primary-base hover:text-white hover:border-primary-base transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-neutral-text-primary"
+                                        className="px-4 py-2 rounded-lg bg-white border border-neutral-border-subtle text-neutral-text-primary font-medium hover:bg-primary-base hover:text-white hover:border-primary-base transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-neutral-text-primary shadow-sm"
                                     >
                                         {t.common.next} →
                                     </button>

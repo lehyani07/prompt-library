@@ -90,28 +90,30 @@ export default function Header({ user }: HeaderProps) {
                         {/* Language Toggle Switch */}
                         <button
                             onClick={toggleLanguage}
-                            className="relative inline-flex h-9 w-20 items-center rounded-full bg-gradient-to-r from-primary-base/20 to-secondary-base/20 border border-primary-base/30 transition-all hover:from-primary-base/30 hover:to-secondary-base/30 focus:outline-none focus:ring-2 focus:ring-primary-base focus:ring-offset-2 shrink-0 my-auto"
+                            className="relative inline-flex items-center w-16 h-8 rounded-full border border-neutral-border-subtle bg-neutral-bg-soft cursor-pointer transition-colors focus:outline-none"
                             aria-label="Switch Language"
                         >
-                            {/* EN Label */}
-                            <span className={`absolute start-2 text-xs font-semibold transition-all z-10 ${language === 'en' ? 'text-white' : 'text-primary-base'
-                                }`}>
+                            {/* AR Text - Visible on Left when Knob is Right */}
+                            <span
+                                className={`absolute left-2 top-1/2 -translate-y-1/2 text-xs font-bold text-neutral-text-secondary transition-opacity duration-300 ${language === 'ar' ? 'opacity-100' : 'opacity-0'
+                                    }`}
+                            >
+                                AR
+                            </span>
+
+                            {/* EN Text - Visible on Right when Knob is Left */}
+                            <span
+                                className={`absolute right-2 top-1/2 -translate-y-1/2 text-xs font-bold text-neutral-text-secondary transition-opacity duration-300 ${language === 'en' ? 'opacity-100' : 'opacity-0'
+                                    }`}
+                            >
                                 EN
                             </span>
 
-                            {/* Sliding Background */}
+                            {/* Sliding Knob */}
                             <span
-                                className={`absolute top-1 h-7 w-9 rounded-full bg-gradient-to-r from-primary-base to-secondary-base shadow-md transition-all ${language === 'ar'
-                                    ? 'end-1 start-auto'
-                                    : 'start-1 end-auto'
+                                className={`absolute left-1 top-1/2 -translate-y-1/2 h-5 w-5 rounded-full bg-linear-to-r from-primary-base to-secondary-base shadow-md transition-transform duration-300 ease-in-out ${language === 'ar' ? 'translate-x-8' : 'translate-x-0'
                                     }`}
                             />
-
-                            {/* AR Label */}
-                            <span className={`absolute end-2 text-xs font-semibold transition-all z-10 ${language === 'ar' ? 'text-white' : 'text-primary-base'
-                                }`}>
-                                AR
-                            </span>
                         </button>
                     </div>
 
@@ -132,73 +134,75 @@ export default function Header({ user }: HeaderProps) {
             </div>
 
             {/* Mobile Menu */}
-            {isMenuOpen && (
-                <div className="md:hidden bg-white border-t border-neutral-border-subtle">
-                    <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                        <Link
-                            href="/"
-                            className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            {t.common.home}
-                        </Link>
-                        <Link
-                            href="/explore"
-                            className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
-                            onClick={() => setIsMenuOpen(false)}
-                        >
-                            {t.common.explore || 'Explore'}
-                        </Link>
-                        {user && (
+            {
+                isMenuOpen && (
+                    <div className="md:hidden bg-white border-t border-neutral-border-subtle">
+                        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                             <Link
-                                href="/library"
+                                href="/"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
                                 onClick={() => setIsMenuOpen(false)}
                             >
-                                {t.common.library || 'Library'}
+                                {t.common.home}
                             </Link>
-                        )}
-
-                        <div className="border-t border-neutral-border-subtle my-2 pt-2">
-                            <button
-                                onClick={() => {
-                                    toggleLanguage()
-                                    setIsMenuOpen(false)
-                                }}
-                                className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
+                            <Link
+                                href="/explore"
+                                className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
+                                onClick={() => setIsMenuOpen(false)}
                             >
-                                {language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
-                            </button>
-
-                            {user ? (
-                                <button
-                                    onClick={() => signOut()}
-                                    className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-red-50"
+                                {t.common.explore || 'Explore'}
+                            </Link>
+                            {user && (
+                                <Link
+                                    href="/library"
+                                    className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
+                                    onClick={() => setIsMenuOpen(false)}
                                 >
-                                    {t.common.signOut}
-                                </button>
-                            ) : (
-                                <>
-                                    <Link
-                                        href="/auth/signin"
-                                        className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        {t.common.signIn}
-                                    </Link>
-                                    <Link
-                                        href="/auth/signup"
-                                        className="block px-3 py-2 rounded-md text-base font-bold text-primary-base hover:bg-neutral-bg-soft"
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        {t.common.signUp}
-                                    </Link>
-                                </>
+                                    {t.common.library || 'Library'}
+                                </Link>
                             )}
+
+                            <div className="border-t border-neutral-border-subtle my-2 pt-2">
+                                <button
+                                    onClick={() => {
+                                        toggleLanguage()
+                                        setIsMenuOpen(false)
+                                    }}
+                                    className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
+                                >
+                                    {language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
+                                </button>
+
+                                {user ? (
+                                    <button
+                                        onClick={() => signOut()}
+                                        className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-red-50"
+                                    >
+                                        {t.common.signOut}
+                                    </button>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href="/auth/signin"
+                                            className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            {t.common.signIn}
+                                        </Link>
+                                        <Link
+                                            href="/auth/signup"
+                                            className="block px-3 py-2 rounded-md text-base font-bold text-primary-base hover:bg-neutral-bg-soft"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            {t.common.signUp}
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </header>
+                )
+            }
+        </header >
     )
 }

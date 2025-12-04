@@ -51,5 +51,38 @@ export default async function PromptDetails({ params }: { params: Promise<{ id: 
         ? prompt.ratings.reduce((acc, r) => acc + r.value, 0) / prompt.ratings.length
         : 0
 
-    return <PromptDetailsContent prompt={prompt} session={session} averageRating={averageRating} />
+    // Fetch similar prompts (same category, excluding current prompt)
+    const similarPrompts = prompt.categoryId ? await prisma.prompt.findMany({
+        where: {
+            categoryId: prompt.categoryId,
+            id: { not: prompt.id },
+            isPublic: true
+        },
+        take: 4,
+        include: {
+            author: {
+                select: {
+                    name: true,
+                    email: true
+                }
+            },
+            category: true,
+            _count: {
+                select: {
+                    favorites: true,
+                    ratings: true
+                }
+            }
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    }) : []
+
+    return <PromptDetailsContent
+        prompt={prompt}
+        session={session}
+        averageRating={averageRating}
+        similarPrompts={similarPrompts}
+    />
 }

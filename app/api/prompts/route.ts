@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { createPromptSchema } from "@/lib/validations/prompt"
+import { rateLimitByIP } from "@/lib/rate-limit"
+import { ZodError } from "zod"
+import logger from "@/lib/logger"
 
 // GET all prompts
 export async function GET(request: Request) {
@@ -39,64 +43,68 @@ export async function GET(request: Request) {
     }
 }
 
-// POST create new prompt
+// POST create new prompt with validation and rate limiting
 export async function POST(request: Request) {
     try {
+        // Rate limiting
+        const ip = request.headers.get("x-forwarded-for") || "unknown"
+        const { success } = await rateLimitByIP(ip)
+
+        if (!success) {
+            return NextResponse.json(
+                { error: "Too many requests. Please try again later." },
+                { status: 429 }
+            )
+        }
+
         const session = await auth()
 
         if (!session?.user?.email) {
-            return NextResponse.json(
-                { error: "Unauthorized" },
-                { status: 401 }
-            )
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
-        const user = await prisma.user.findUnique({
-            where: { email: session.user.email }
-        })
-
+        const user = await prisma.user.findUnique({ where: { email: session.user.email } })
         if (!user) {
-            return NextResponse.json(
-                { error: "User not found" },
-                { status: 404 }
-            )
+            return NextResponse.json({ error: "User not found" }, { status: 404 })
         }
 
-        const { title, content, description, isPublic, categoryId } = await request.json()
+        const body = await request.json()
 
-        if (!title || !content) {
-            return NextResponse.json(
-                { error: "Title and content are required" },
-                { status: 400 }
-            )
-        }
+        // Validate input with Zod
+        const validatedData = createPromptSchema.parse(body)
 
         const prompt = await prisma.prompt.create({
             data: {
-                title,
-                content,
-                description,
-                isPublic: isPublic || false,
+                ...validatedData,
+                isPublic: validatedData.isPublic ?? false,
                 authorId: user.id,
-                categoryId: categoryId || null
             },
             include: {
-                author: {
-                    select: {
-                        name: true,
-                        email: true
-                    }
-                },
+                author: { select: { name: true, email: true } },
                 category: true
             }
         })
 
+        logger.info("Prompt created", {
+            promptId: prompt.id,
+            userId: user.id,
+            title: prompt.title,
+        })
+
         return NextResponse.json(prompt, { status: 201 })
     } catch (error) {
-        console.error("Create prompt error:", error)
-        return NextResponse.json(
-            { error: "Failed to create prompt" },
-            { status: 500 }
-        )
+        if (error instanceof ZodError) {
+            return NextResponse.json(
+                { error: "Validation failed", details: (error as any).errors },
+                { status: 400 }
+            )
+        }
+
+        logger.error("Failed to create prompt", {
+            error: error instanceof Error ? error.message : "Unknown error",
+            stack: error instanceof Error ? error.stack : undefined,
+        })
+
+        return NextResponse.json({ error: "Failed to create prompt" }, { status: 500 })
     }
 }

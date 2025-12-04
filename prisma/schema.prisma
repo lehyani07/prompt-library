@@ -7,6 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -14,6 +26,11 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
+  role          Role      @default(USER)
+  status        UserStatus @default(ACTIVE)
+  lastLoginAt   DateTime?
+  verificationToken String?   @unique
+  verificationTokenExpiry DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   
@@ -29,6 +46,8 @@ model Prompt {
   content     String
   description String?
   isPublic    Boolean  @default(false)
+  viewCount   Int      @default(0)
+  copyCount   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   

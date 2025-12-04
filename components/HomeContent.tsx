@@ -42,7 +42,7 @@ export default function HomeContent({ session, featuredPrompts }: HomeContentPro
 
                 <main className="relative mx-auto max-w-7xl px-6">
                     <div className="text-center mb-16">
-                        <h1 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-base via-secondary-base to-purple-600 mb-6">
+                        <h1 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-base via-secondary-base to-purple-600 mb-6 leading-normal py-2">
                             {t.home.heroTitle}
                         </h1>
                         <p className="mt-6 text-xl text-neutral-text-secondary max-w-3xl mx-auto">

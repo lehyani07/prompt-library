@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Julius_Sans_One, Almarai } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -9,6 +9,19 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const almarai = Almarai({
+  weight: ["300", "400", "700", "800"],
+  variable: "--font-almarai",
+  subsets: ["arabic"],
+  display: "swap",
+});
+
+const juliusSansOne = Julius_Sans_One({
+  weight: "400",
+  variable: "--font-julius-sans-one",
   subsets: ["latin"],
 });
 
@@ -30,9 +43,9 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${almarai.variable} ${juliusSansOne.variable} font-sans antialiased`}
       >
         <LanguageProvider>
           <Header user={session?.user} />
