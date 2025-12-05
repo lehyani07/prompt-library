@@ -206,13 +206,22 @@ export default function PromptsTable({
                                             </div>
                                         </td>
                                         <td className="px-4 py-2.5 whitespace-nowrap text-center border-l border-r border-gray-200">
-                                            <button
-                                                onClick={() => deletePrompt(prompt.id)}
-                                                disabled={isLoading || isPending}
-                                                className={`text-red-600 hover:text-red-900 text-sm font-medium transition-colors ${isLoading || isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                            >
-                                                {t.admin.prompts.delete}
-                                            </button>
+                                            <div className="flex items-center justify-center gap-2">
+                                                <Link
+                                                    href={`/prompts/${prompt.id}/edit?callbackUrl=/admin/prompts`}
+                                                    className="text-blue-600 hover:text-blue-900 text-sm font-medium transition-colors"
+                                                >
+                                                    {t.common.edit}
+                                                </Link>
+                                                <span className="text-gray-300">|</span>
+                                                <button
+                                                    onClick={() => deletePrompt(prompt.id)}
+                                                    disabled={isLoading || isPending}
+                                                    className={`text-red-600 hover:text-red-900 text-sm font-medium transition-colors ${isLoading || isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                >
+                                                    {t.admin.prompts.delete}
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

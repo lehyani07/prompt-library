@@ -20,14 +20,51 @@ export default function ContactPage() {
                         {t.contact.subtitle}
                     </p>
 
-                    <form className="space-y-6">
+                    <form onSubmit={async (e) => {
+                        e.preventDefault()
+                        const form = e.target as HTMLFormElement
+                        const formData = new FormData(form)
+                        const data = {
+                            name: formData.get('name'),
+                            email: formData.get('email'),
+                            message: formData.get('message')
+                        }
+
+                        const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement
+                        const originalText = submitBtn.innerText
+                        submitBtn.disabled = true
+                        submitBtn.innerText = t.common.loading
+
+                        try {
+                            const res = await fetch('/api/contact', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(data)
+                            })
+
+                            if (res.ok) {
+                                alert(t.contact.message + ' ' + t.prompt.ratingSubmitted) // Using existing success message for now
+                                form.reset()
+                            } else {
+                                alert(t.common.error)
+                            }
+                        } catch (err) {
+                            console.error(err)
+                            alert(t.common.error)
+                        } finally {
+                            submitBtn.disabled = false
+                            submitBtn.innerText = originalText
+                        }
+                    }} className="space-y-6">
                         <div>
                             <label htmlFor="name" className="block text-sm font-medium text-neutral-text-secondary mb-2">
                                 {t.auth.name}
                             </label>
                             <input
                                 type="text"
+                                name="name"
                                 id="name"
+                                required
                                 className="w-full rounded-lg border border-neutral-border-subtle bg-white/50 px-4 py-2 text-sm focus:border-primary-base focus:ring-1 focus:ring-primary-base outline-none transition-all"
                                 placeholder={t.contact.namePlaceholder}
                             />
@@ -39,7 +76,9 @@ export default function ContactPage() {
                             </label>
                             <input
                                 type="email"
+                                name="email"
                                 id="email"
+                                required
                                 className="w-full rounded-lg border border-neutral-border-subtle bg-white/50 px-4 py-2 text-sm focus:border-primary-base focus:ring-1 focus:ring-primary-base outline-none transition-all"
                                 placeholder={t.contact.emailPlaceholder}
                             />
@@ -51,7 +90,9 @@ export default function ContactPage() {
                             </label>
                             <textarea
                                 id="message"
+                                name="message"
                                 rows={4}
+                                required
                                 className="w-full rounded-lg border border-neutral-border-subtle bg-white/50 px-4 py-2 text-sm focus:border-primary-base focus:ring-1 focus:ring-primary-base outline-none transition-all"
                                 placeholder={t.contact.messagePlaceholder}
                             ></textarea>
@@ -59,7 +100,7 @@ export default function ContactPage() {
 
                         <button
                             type="submit"
-                            className="w-full rounded-lg bg-linear-to-r from-primary-base to-secondary-base px-4 py-2.5 text-sm font-semibold text-white shadow-button hover:shadow-floating transition-all duration-300"
+                            className="w-full rounded-lg bg-linear-to-r from-primary-base to-secondary-base px-4 py-2.5 text-sm font-semibold text-white shadow-button hover:shadow-floating transition-all duration-300 disabled:opacity-70"
                         >
                             {t.contact.sendMessage}
                         </button>
