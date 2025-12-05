@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useLanguage } from "@/lib/i18n/LanguageContext"
-import { EnvelopeIcon, EnvelopeOpenIcon, TrashIcon, CheckIcon } from "@heroicons/react/24/outline"
+import { EnvelopeIcon, EnvelopeOpenIcon, TrashIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 
 interface ContactMessage {
     id: string
@@ -371,8 +371,8 @@ export default function ContactMessagesContent({
                 )}
             </div>
 
-            {/* Messages List - Email Style */}
-            <div className="bg-white shadow rounded-lg overflow-hidden border border-gray-200">
+            {/* Messages List - Table Style */}
+            <div className="bg-white shadow rounded-lg overflow-hidden">
                 {isLoading ? (
                     <div className="p-8 text-center text-gray-500">
                         {t.common.loading}
@@ -382,76 +382,107 @@ export default function ContactMessagesContent({
                         {t.admin.contactMessages?.noMessages || "No messages found"}
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-100">
-                        {messages.map((message) => (
-                            <div
-                                key={message.id}
-                                onClick={() => openMessage(message)}
-                                className={`group flex items-center gap-4 p-4 hover:bg-gray-50 cursor-pointer transition-all duration-200 ${!message.read ? "bg-blue-50/40" : ""
-                                    }`}
-                            >
-                                {/* Read Status Icon */}
-                                <div className="shrink-0">
-                                    {message.read ? (
-                                        <EnvelopeOpenIcon className="h-5 w-5 text-gray-400" />
-                                    ) : (
-                                        <EnvelopeIcon className="h-5 w-5 text-blue-600" />
-                                    )}
-                                </div>
-
-                                {/* Sender Info - Fixed width or flex-basis */}
-                                <div className={`w-48 shrink-0 truncate ${!message.read ? "font-bold text-gray-900" : "text-gray-700"}`}>
-                                    {message.name}
-                                </div>
-
-                                {/* Message Preview - Flexible */}
-                                <div className="flex-1 min-w-0 flex items-center gap-2">
-                                    <span className={`truncate text-sm ${!message.read ? "font-semibold text-gray-900" : "text-gray-600"}`}>
-                                        {message.message}
-                                    </span>
-                                    <span className="text-gray-400 text-sm hidden sm:inline">- {new Date(message.createdAt).toLocaleDateString()}</span>
-                                </div>
-
-                                {/* Date/Time */}
-                                <div className={`text-xs text-gray-500 shrink-0 whitespace-nowrap w-24 text-right ${!message.read ? "font-semibold text-blue-600" : ""}`}>
-                                    {new Date(message.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                                </div>
-
-                                {/* Actions - Hover only on desktop */}
-                                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity" onClick={(e) => e.stopPropagation()}>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            handleToggleRead(message.id, message.read)
-                                        }}
-                                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full"
-                                        title={message.read ? "Mark as unread" : "Mark as read"}
+                    <div className="overflow-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-100 sticky top-0 z-10">
+                                <tr>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 text-center w-12`}>
+                                        <span className="sr-only">Status</span>
+                                    </th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 ${isRTL ? 'text-right' : 'text-left'}`} style={{ minWidth: '200px' }}>
+                                        {t.common.name || "Sender"}
+                                    </th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 text-center w-40`}>
+                                        {t.common.date || "Date"}
+                                    </th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                        {t.common.message || "Message"}
+                                    </th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 text-center w-24`}>
+                                        {t.common.actions || "Actions"}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {messages.map((message) => (
+                                    <tr
+                                        key={message.id}
+                                        onClick={() => openMessage(message)}
+                                        className={`hover:bg-gray-50 transition-colors cursor-pointer ${!message.read ? "bg-blue-50/40" : ""}`}
                                     >
-                                        {message.read ? <EnvelopeIcon className="h-4 w-4" /> : <EnvelopeOpenIcon className="h-4 w-4" />}
-                                    </button>
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation()
-                                            handleDeleteClick(message.id)
-                                        }}
-                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
-                                        title={t.common.delete}
-                                    >
-                                        <TrashIcon className="h-4 w-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
+                                        <td className="px-4 py-2.5 border-r border-gray-200 text-center">
+                                            {message.read ? (
+                                                <EnvelopeOpenIcon className="h-5 w-5 text-gray-400 mx-auto" />
+                                            ) : (
+                                                <EnvelopeIcon className="h-5 w-5 text-blue-600 mx-auto" />
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-2.5 border-r border-gray-200">
+                                            <div>
+                                                <div className={`text-sm font-medium ${!message.read ? "text-gray-900 font-bold" : "text-gray-900"}`}>
+                                                    {message.name}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-2.5 border-r border-gray-200 text-center text-sm text-gray-500 whitespace-nowrap">
+                                            <div className={!message.read ? "font-semibold text-blue-600" : ""}>
+                                                {new Date(message.createdAt).toLocaleDateString(undefined, {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                })}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-2.5 border-r border-gray-200">
+                                            <span className={`block truncate text-sm max-w-md ${!message.read ? "font-semibold text-gray-900" : "text-gray-600"}`}>
+                                                {message.message}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-2.5 border-r border-gray-200 text-center" onClick={(e) => e.stopPropagation()}>
+                                            <div className="flex items-center justify-center gap-2">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        handleToggleRead(message.id, message.read)
+                                                    }}
+                                                    className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                                                    title={message.read ? "Mark as unread" : "Mark as read"}
+                                                >
+                                                    {message.read ? <EnvelopeIcon className="h-4 w-4" /> : <EnvelopeOpenIcon className="h-4 w-4" />}
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        handleDeleteClick(message.id)
+                                                    }}
+                                                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors"
+                                                    title={t.common.delete}
+                                                >
+                                                    <TrashIcon className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-                        <div className="text-sm text-gray-700 hidden sm:block">
+                    <div className="bg-gray-50 px-6 py-3 border-t border-gray-200 grid grid-cols-1 sm:grid-cols-3 items-center gap-4">
+                        <div className="text-sm text-gray-700 hidden sm:block text-start">
                             {t.common.showing || "Showing"} {(currentPage - 1) * itemsPerPage + 1} - {Math.min(currentPage * itemsPerPage, totalCount)} {t.common.of || "of"} {totalCount}
                         </div>
-                        <div className="flex gap-1">
+                        <div className="flex justify-center gap-1">
+                            <button
+                                onClick={() => router.push(createPageUrl(currentPage - 1))}
+                                disabled={currentPage === 1}
+                                className="px-2 py-1 rounded-md text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {isRTL ? <ChevronRightIcon className="h-5 w-5" /> : <ChevronLeftIcon className="h-5 w-5" />}
+                            </button>
                             {getPageNumbers().map((pageNum, index) => (
                                 <div key={index}>
                                     {pageNum === "..." ? (
@@ -459,7 +490,7 @@ export default function ContactMessagesContent({
                                     ) : (
                                         <a
                                             href={createPageUrl(pageNum as number)}
-                                            className={`px-3 py-1 rounded text-sm transition-colors ${currentPage === pageNum
+                                            className={`px-3 py-1 rounded text-sm transition-colors block ${currentPage === pageNum
                                                 ? "bg-white border border-gray-300 font-semibold shadow-sm text-primary-base"
                                                 : "text-gray-600 hover:bg-gray-200"
                                                 }`}
@@ -469,7 +500,15 @@ export default function ContactMessagesContent({
                                     )}
                                 </div>
                             ))}
+                            <button
+                                onClick={() => router.push(createPageUrl(currentPage + 1))}
+                                disabled={currentPage === totalPages}
+                                className="px-2 py-1 rounded-md text-gray-600 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                {isRTL ? <ChevronLeftIcon className="h-5 w-5" /> : <ChevronRightIcon className="h-5 w-5" />}
+                            </button>
                         </div>
+                        <div className="hidden sm:block" />
                     </div>
                 )}
             </div>

@@ -46,7 +46,8 @@ export default function ContactPage() {
                         const data = {
                             name: formData.get('name'),
                             email: formData.get('email'),
-                            message: formData.get('message')
+                            message: formData.get('message'),
+                            website: formData.get('website') // Honeypot field
                         }
 
                         const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement
@@ -128,6 +129,18 @@ export default function ContactPage() {
                                 className="w-full rounded-lg border border-neutral-border-subtle bg-white/50 px-4 py-2 text-sm focus:border-primary-base focus:ring-1 focus:ring-primary-base outline-none transition-all"
                                 placeholder={t.contact.messagePlaceholder}
                             ></textarea>
+                        </div>
+
+                        {/* Honeypot field - hidden from real users */}
+                        <div className="hidden" aria-hidden="true">
+                            <label htmlFor="website">Website</label>
+                            <input
+                                type="text"
+                                name="website"
+                                id="website"
+                                tabIndex={-1}
+                                autoComplete="off"
+                            />
                         </div>
 
                         <button

@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import ContactMessagesContent from "@/components/admin/ContactMessagesContent"
 
-const ITEMS_PER_PAGE = 20
+const ITEMS_PER_PAGE = 10
 
 export default async function ContactMessagesPage({
     searchParams
@@ -36,14 +36,46 @@ export default async function ContactMessagesPage({
             prisma.contactMessage.count(),
         ])
 
-        const totalPages = Math.ceil(filteredTotalCount / ITEMS_PER_PAGE)
+        // Mock data if no messages found (for development/demo purposes)
+        let finalMessages = messages
+        let finalFilteredCount = filteredTotalCount
+        let finalUnreadCount = unreadCount
+        let finalAllCount = allMessagesCount
+
+        if (allMessagesCount === 0) {
+            finalMessages = Array.from({ length: 10 }).map((_, i) => ({
+                id: `mock-${i}`,
+                name: i % 2 === 0 ? "Ahmed Hassan" : "Sarah Miller",
+                email: i % 2 === 0 ? "ahmed@example.com" : "sarah@example.com",
+                message: i % 3 === 0
+                    ? "Great website! I really like the design and the smooth animations."
+                    : i % 3 === 1
+                        ? "I found a bug in the search feature. It does not return results for Arabic queries."
+                        : "Thank you for sharing these prompts. They are very helpful.",
+                read: i % 4 === 0, // Some read, some unread
+                createdAt: new Date(Date.now() - i * 86400000).toISOString(),
+                updatedAt: new Date().toISOString()
+            })) as any[]
+
+            finalFilteredCount = 10
+            finalAllCount = 10
+            finalUnreadCount = finalMessages.filter((m: any) => !m.read).length
+        }
+
+        const totalPages = Math.ceil(finalFilteredCount / ITEMS_PER_PAGE)
+
+        const plainMessages = finalMessages.map(msg => ({
+            ...msg,
+            createdAt: new Date(msg.createdAt).toISOString(),
+            updatedAt: new Date(msg.updatedAt).toISOString()
+        }))
 
         return (
             <ContactMessagesContent
-                initialMessages={messages}
-                initialFilteredCount={filteredTotalCount}
-                initialUnreadCount={unreadCount}
-                initialAllCount={allMessagesCount}
+                initialMessages={plainMessages}
+                initialFilteredCount={finalFilteredCount}
+                initialUnreadCount={finalUnreadCount}
+                initialAllCount={finalAllCount}
                 currentPage={page}
                 totalPages={totalPages}
                 itemsPerPage={ITEMS_PER_PAGE}
