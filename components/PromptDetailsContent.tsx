@@ -12,15 +12,110 @@ interface PromptDetailsContentProps {
     similarPrompts: any[]
 }
 
+// Helper to check if view was already tracked recently (24 hours)
+const VIEW_EXPIRY_HOURS = 24
+const getViewedPrompts = (): Record<string, number> => {
+    if (typeof window === 'undefined') return {}
+    try {
+        const stored = localStorage.getItem('viewedPrompts')
+        return stored ? JSON.parse(stored) : {}
+    } catch {
+        return {}
+    }
+}
+
+const setViewedPrompt = (promptId: string) => {
+    if (typeof window === 'undefined') return
+    try {
+        const viewed = getViewedPrompts()
+        // Clean up expired entries
+        const now = Date.now()
+        const cleaned: Record<string, number> = {}
+        Object.entries(viewed).forEach(([id, timestamp]) => {
+            if (now - timestamp < VIEW_EXPIRY_HOURS * 60 * 60 * 1000) {
+                cleaned[id] = timestamp
+            }
+        })
+        cleaned[promptId] = now
+        localStorage.setItem('viewedPrompts', JSON.stringify(cleaned))
+    } catch {
+        // Ignore localStorage errors
+    }
+}
+
+const hasViewedRecently = (promptId: string): boolean => {
+    const viewed = getViewedPrompts()
+    const timestamp = viewed[promptId]
+    if (!timestamp) return false
+    return Date.now() - timestamp < VIEW_EXPIRY_HOURS * 60 * 60 * 1000
+}
+
 export default function PromptDetailsContent({ prompt, session, averageRating, similarPrompts }: PromptDetailsContentProps) {
     const { t, language } = useLanguage()
     const [copied, setCopied] = useState(false)
     const [viewCount, setViewCount] = useState(prompt.viewCount || 0)
     const [copyCount, setCopyCount] = useState(prompt.copyCount || 0)
+    const [isFavorited, setIsFavorited] = useState(false)
+    const [favoriteCount, setFavoriteCount] = useState(prompt._count?.favorites || 0)
+    const [isTogglingFavorite, setIsTogglingFavorite] = useState(false)
 
-    // Track view on mount
+    // Rating states
+    const [userRating, setUserRating] = useState<any>(null)
+    const [hasRated, setHasRated] = useState(false)
+    const [showRatingForm, setShowRatingForm] = useState(false)
+    const [ratingValue, setRatingValue] = useState(0)
+    const [ratingComment, setRatingComment] = useState('')
+    const [isSubmittingRating, setIsSubmittingRating] = useState(false)
+    const [currentAverageRating, setCurrentAverageRating] = useState(averageRating)
+    const [totalRatings, setTotalRatings] = useState(prompt._count?.ratings || 0)
+    const [ratingMessage, setRatingMessage] = useState('')
+
+    // Check favorite status on mount
+    useEffect(() => {
+        const checkFavorite = async () => {
+            try {
+                const response = await fetch(`/api/prompts/${prompt.id}/favorite`)
+                if (response.ok) {
+                    const data = await response.json()
+                    setIsFavorited(data.isFavorited)
+                    setFavoriteCount(data.favoriteCount)
+                }
+            } catch (error) {
+                console.error('Failed to check favorite:', error)
+            }
+        }
+        checkFavorite()
+    }, [prompt.id])
+
+    // Check rating status on mount
+    useEffect(() => {
+        const checkRating = async () => {
+            try {
+                const response = await fetch(`/api/prompts/${prompt.id}/rating`)
+                if (response.ok) {
+                    const data = await response.json()
+                    setHasRated(data.hasRated)
+                    if (data.userRating) {
+                        setUserRating(data.userRating)
+                        setRatingValue(data.userRating.value)
+                        setRatingComment(data.userRating.comment || '')
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to check rating:', error)
+            }
+        }
+        checkRating()
+    }, [prompt.id])
+
+    // Track view on mount - only if not viewed recently
     useEffect(() => {
         const trackView = async () => {
+            // Skip if already viewed in last 24 hours
+            if (hasViewedRecently(prompt.id)) {
+                return
+            }
+
             try {
                 const response = await fetch(`/api/prompts/${prompt.id}/view`, {
                     method: 'POST'
@@ -28,6 +123,7 @@ export default function PromptDetailsContent({ prompt, session, averageRating, s
                 if (response.ok) {
                     const data = await response.json()
                     setViewCount(data.viewCount)
+                    setViewedPrompt(prompt.id)
                 }
             } catch (error) {
                 console.error('Failed to track view:', error)
@@ -35,6 +131,33 @@ export default function PromptDetailsContent({ prompt, session, averageRating, s
         }
         trackView()
     }, [prompt.id])
+
+    // Toggle favorite handler
+    const handleToggleFavorite = async () => {
+        if (!session) {
+            // Redirect to login or show message
+            window.location.href = '/auth/signin'
+            return
+        }
+
+        if (isTogglingFavorite) return
+
+        setIsTogglingFavorite(true)
+        try {
+            const response = await fetch(`/api/prompts/${prompt.id}/favorite`, {
+                method: 'POST'
+            })
+            if (response.ok) {
+                const data = await response.json()
+                setIsFavorited(data.isFavorited)
+                setFavoriteCount(data.favoriteCount)
+            }
+        } catch (error) {
+            console.error('Failed to toggle favorite:', error)
+        } finally {
+            setIsTogglingFavorite(false)
+        }
+    }
 
     const handleCopy = async () => {
         try {
@@ -53,6 +176,97 @@ export default function PromptDetailsContent({ prompt, session, averageRating, s
             setTimeout(() => setCopied(false), 2000)
         } catch (error) {
             console.error('Failed to copy:', error)
+        }
+    }
+
+    // Rating handlers
+    const handleSubmitRating = async () => {
+        if (!session) {
+            setRatingMessage(t.prompt.mustSignInToRate)
+            setTimeout(() => setRatingMessage(''), 3000)
+            return
+        }
+
+        if (ratingValue === 0) {
+            return
+        }
+
+        // Check if user is rating their own prompt
+        if (session?.user?.email === prompt.author.email) {
+            setRatingMessage(t.prompt.cannotRateOwnPrompt)
+            setTimeout(() => setRatingMessage(''), 3000)
+            return
+        }
+
+        setIsSubmittingRating(true)
+        try {
+            const response = await fetch(`/api/prompts/${prompt.id}/rating`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    value: ratingValue,
+                    comment: ratingComment.trim() || null
+                })
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                setUserRating(data.rating)
+                setHasRated(true)
+                setCurrentAverageRating(data.averageRating)
+                setTotalRatings(data.totalRatings)
+                setShowRatingForm(false)
+                setRatingMessage(hasRated ? t.prompt.ratingUpdated : t.prompt.ratingSubmitted)
+                setTimeout(() => setRatingMessage(''), 3000)
+
+                // Refresh page to show updated rating in list
+                window.location.reload()
+            } else {
+                const error = await response.json()
+                setRatingMessage(error.error || 'Failed to submit rating')
+                setTimeout(() => setRatingMessage(''), 3000)
+            }
+        } catch (error) {
+            console.error('Failed to submit rating:', error)
+            setRatingMessage('Failed to submit rating')
+            setTimeout(() => setRatingMessage(''), 3000)
+        } finally {
+            setIsSubmittingRating(false)
+        }
+    }
+
+    const handleDeleteRating = async () => {
+        if (!confirm(t.prompt.deleteRating + '?')) {
+            return
+        }
+
+        setIsSubmittingRating(true)
+        try {
+            const response = await fetch(`/api/prompts/${prompt.id}/rating`, {
+                method: 'DELETE'
+            })
+
+            if (response.ok) {
+                const data = await response.json()
+                setUserRating(null)
+                setHasRated(false)
+                setRatingValue(0)
+                setRatingComment('')
+                setCurrentAverageRating(data.averageRating)
+                setTotalRatings(data.totalRatings)
+                setShowRatingForm(false)
+                setRatingMessage(t.prompt.ratingDeleted)
+                setTimeout(() => setRatingMessage(''), 3000)
+
+                // Refresh page to show updated rating in list
+                window.location.reload()
+            }
+        } catch (error) {
+            console.error('Failed to delete rating:', error)
+        } finally {
+            setIsSubmittingRating(false)
         }
     }
 
@@ -135,12 +349,20 @@ export default function PromptDetailsContent({ prompt, session, averageRating, s
                                 </svg>
                                 {averageRating.toFixed(1)} ({prompt._count.ratings})
                             </span>
-                            <span className="flex items-center gap-1 text-accent-error font-medium">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                            <button
+                                onClick={handleToggleFavorite}
+                                disabled={isTogglingFavorite}
+                                className={`flex items-center gap-1 font-medium transition-all duration-200 hover:scale-110 ${isFavorited
+                                    ? 'text-accent-error'
+                                    : 'text-neutral-text-secondary hover:text-accent-error'
+                                    } ${isTogglingFavorite ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                                title={isFavorited ? t.common.removeFromFavorites : t.common.addToFavorites}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={isFavorited ? "currentColor" : "none"} stroke="currentColor" strokeWidth={isFavorited ? 0 : 2} className="w-4 h-4">
                                     <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
                                 </svg>
-                                {prompt._count.favorites}
-                            </span>
+                                {favoriteCount}
+                            </button>
                             <span className="flex items-center gap-1 text-primary-base font-medium">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                                     <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
@@ -156,6 +378,154 @@ export default function PromptDetailsContent({ prompt, session, averageRating, s
                             </span>
                         </div>
                     </div>
+                </div>
+
+                {/* Rating Section */}
+                <div className="mb-6 rounded-xl bg-white/80 backdrop-blur-md p-4 md:p-6 shadow-card border border-white/20">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl md:text-2xl font-bold text-neutral-text-primary">
+                            {t.prompt.rateThisPrompt}
+                        </h2>
+                        {hasRated && (
+                            <button
+                                onClick={() => setShowRatingForm(!showRatingForm)}
+                                className="text-sm font-medium text-primary-base hover:text-secondary-base transition-colors"
+                            >
+                                {showRatingForm ? t.common.cancel : t.prompt.updateRating}
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Rating Message */}
+                    {ratingMessage && (
+                        <div className={`mb-4 p-3 rounded-lg ${ratingMessage.includes('success') || ratingMessage.includes('بنجاح')
+                            ? 'bg-green-50 text-green-800 border border-green-200'
+                            : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                            {ratingMessage}
+                        </div>
+                    )}
+
+                    {/* Rating Form */}
+                    {(!hasRated || showRatingForm) && session?.user?.email !== prompt.author.email && (
+                        <div className="space-y-4 mb-6">
+                            {/* Star Rating */}
+                            <div>
+                                <label className="block text-sm font-semibold text-neutral-text-primary mb-2">
+                                    {t.prompt.yourRating}
+                                </label>
+                                <div className="flex gap-2">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setRatingValue(star)}
+                                            className="transition-all duration-200 hover:scale-110"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill={star <= ratingValue ? "currentColor" : "none"}
+                                                stroke="currentColor"
+                                                strokeWidth={star <= ratingValue ? 0 : 2}
+                                                className={`w-8 h-8 ${star <= ratingValue ? 'text-accent-warning' : 'text-gray-300'}`}
+                                            >
+                                                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Comment */}
+                            <div>
+                                <label className="block text-sm font-semibold text-neutral-text-primary mb-2">
+                                    {t.prompt.addComment}
+                                </label>
+                                <textarea
+                                    value={ratingComment}
+                                    onChange={(e) => setRatingComment(e.target.value)}
+                                    placeholder={t.prompt.commentPlaceholder}
+                                    rows={3}
+                                    className="w-full px-4 py-2 rounded-lg border border-neutral-border-subtle focus:border-primary-base focus:ring-2 focus:ring-primary-base/20 outline-none transition-all"
+                                />
+                            </div>
+
+                            {/* Submit Button */}
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={handleSubmitRating}
+                                    disabled={isSubmittingRating || ratingValue === 0}
+                                    className="inline-flex items-center gap-2 rounded-lg bg-linear-to-r from-primary-base to-secondary-base px-6 py-2.5 text-sm font-semibold text-white shadow-button hover:shadow-floating transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmittingRating ? t.common.loading : (hasRated ? t.prompt.updateRating : t.prompt.submitRating)}
+                                </button>
+                                {hasRated && (
+                                    <button
+                                        onClick={handleDeleteRating}
+                                        disabled={isSubmittingRating}
+                                        className="inline-flex items-center gap-2 rounded-lg bg-red-50 hover:bg-red-100 px-6 py-2.5 text-sm font-semibold text-red-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {t.prompt.deleteRating}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Cannot rate own prompt message */}
+                    {session?.user?.email === prompt.author.email && (
+                        <div className="p-4 rounded-lg bg-neutral-50 border border-neutral-border-subtle">
+                            <p className="text-sm text-neutral-text-secondary">
+                                {t.prompt.cannotRateOwnPrompt}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Must sign in message */}
+                    {!session && (
+                        <div className="p-4 rounded-lg bg-primary-base/5 border border-primary-base/20">
+                            <p className="text-sm text-neutral-text-secondary">
+                                {t.prompt.mustSignInToRate}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Existing Ratings */}
+                    {prompt.ratings.length > 0 && (
+                        <div className="mt-6">
+                            <h3 className="text-lg font-bold text-neutral-text-primary mb-4">
+                                {t.prompt.ratings} ({totalRatings})
+                            </h3>
+                            <div className="space-y-4">
+                                {prompt.ratings.map((rating: any) => (
+                                    <div key={rating.id} className="border-b border-neutral-border-subtle pb-4 last:border-0">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <span className="font-semibold text-neutral-text-primary">{rating.user.name}</span>
+                                            <div className="flex items-center gap-1 text-accent-warning">
+                                                {Array.from({ length: rating.value }).map((_, i) => (
+                                                    <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                                                        <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+                                                    </svg>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        {rating.comment && (
+                                            <p className="text-sm text-neutral-text-secondary leading-relaxed">{rating.comment}</p>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* No ratings yet */}
+                    {prompt.ratings.length === 0 && session?.user?.email !== prompt.author.email && (
+                        <div className="text-center py-8">
+                            <p className="text-neutral-text-secondary">
+                                {t.prompt.noRatingsYet}
+                            </p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Similar Prompts Section */}
@@ -213,34 +583,6 @@ export default function PromptDetailsContent({ prompt, session, averageRating, s
                                     </Link>
                                 )
                             })}
-                        </div>
-                    </div>
-                )}
-
-                {/* Ratings Section */}
-                {prompt.ratings.length > 0 && (
-                    <div className="mt-6 rounded-xl bg-white/80 backdrop-blur-md p-4 md:p-6 shadow-card border border-white/20">
-                        <h2 className="mb-4 text-xl md:text-2xl font-bold text-neutral-text-primary">
-                            {t.prompt.ratings}
-                        </h2>
-                        <div className="space-y-3">
-                            {prompt.ratings.map((rating: any) => (
-                                <div key={rating.id} className="border-b border-neutral-border-subtle pb-3 last:border-0">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className="font-semibold text-neutral-text-primary">{rating.user.name}</span>
-                                        <div className="flex items-center gap-1 text-accent-warning">
-                                            {Array.from({ length: rating.value }).map((_, i) => (
-                                                <svg key={i} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                                                    <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
-                                                </svg>
-                                            ))}
-                                        </div>
-                                    </div>
-                                    {rating.comment && (
-                                        <p className="text-sm text-neutral-text-secondary leading-relaxed">{rating.comment}</p>
-                                    )}
-                                </div>
-                            ))}
                         </div>
                     </div>
                 )}
