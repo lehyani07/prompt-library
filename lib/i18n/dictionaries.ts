@@ -43,6 +43,9 @@ export const dictionaries = {
             legal: "Legal",
             addToFavorites: "Add to Favorites",
             removeFromFavorites: "Remove from Favorites",
+            showing: "Showing",
+            of: "of",
+            reply: "Reply",
         },
         categories: {
             artDesign: "Art & Design",
@@ -325,7 +328,10 @@ export const dictionaries = {
                 unread: "Unread",
                 read: "Read",
                 new: "New",
-                noMessages: "No messages found"
+                noMessages: "No messages found",
+                markAllAsRead: "Mark All as Read",
+                markingAll: "Marking...",
+                confirmMarkAllAsRead: "Are you sure you want to mark all messages as read?"
             }
         }
     },
@@ -370,6 +376,9 @@ export const dictionaries = {
             legal: "قانوني",
             addToFavorites: "أضف للمفضلة",
             removeFromFavorites: "إزالة من المفضلة",
+            showing: "عرض",
+            of: "من",
+            reply: "رد",
         },
         categories: {
             artDesign: "الفن والتصميم",
@@ -652,7 +661,10 @@ export const dictionaries = {
                 unread: "غير مقروء",
                 read: "مقروء",
                 new: "جديد",
-                noMessages: "لا توجد رسائل"
+                noMessages: "لا توجد رسائل",
+                markAllAsRead: "تحديد الكل كمقروء",
+                markingAll: "جاري التحديد...",
+                confirmMarkAllAsRead: "هل أنت متأكد من تحديد جميع الرسائل كمقروءة؟"
             }
         }
     }

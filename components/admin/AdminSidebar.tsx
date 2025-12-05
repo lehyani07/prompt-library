@@ -39,13 +39,13 @@ export default function AdminSidebar() {
         fetchUnreadCount()
         // Refresh count every 30 seconds
         const interval = setInterval(fetchUnreadCount, 30000)
-        
+
         // Listen for custom event when messages are updated
         const handleMessagesUpdate = () => {
             fetchUnreadCount()
         }
         window.addEventListener('contactMessagesUpdated', handleMessagesUpdate)
-        
+
         return () => {
             clearInterval(interval)
             window.removeEventListener('contactMessagesUpdated', handleMessagesUpdate)
@@ -92,6 +92,13 @@ export default function AdminSidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            onClick={(e) => {
+                                // If clicking "Contact Messages" while already on the page, force a refresh/reset
+                                if (isActive && item.href === '/admin/contact-messages') {
+                                    e.preventDefault()
+                                    window.location.href = '/admin/contact-messages'
+                                }
+                            }}
                             className={`
                                 flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group relative
                                 ${isActive
@@ -105,8 +112,8 @@ export default function AdminSidebar() {
                             {showBadge && (
                                 <span className={`
                                     flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold
-                                    ${isActive 
-                                        ? 'bg-white text-primary-base' 
+                                    ${isActive
+                                        ? 'bg-white text-primary-base'
                                         : 'bg-red-500 text-white'
                                     }
                                 `}>

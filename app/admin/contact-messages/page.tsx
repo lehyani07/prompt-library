@@ -24,7 +24,7 @@ export default async function ContactMessagesPage({
             throw new Error("ContactMessage model not found in Prisma Client. Please run 'npx prisma generate' and restart the server.")
         }
 
-        const [messages, totalCount, unreadCount] = await Promise.all([
+        const [messages, filteredTotalCount, unreadCount, allMessagesCount] = await Promise.all([
             prisma.contactMessage.findMany({
                 where,
                 orderBy: { createdAt: "desc" },
@@ -33,15 +33,17 @@ export default async function ContactMessagesPage({
             }),
             prisma.contactMessage.count({ where }),
             prisma.contactMessage.count({ where: { read: false } }),
+            prisma.contactMessage.count(),
         ])
 
-        const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE)
+        const totalPages = Math.ceil(filteredTotalCount / ITEMS_PER_PAGE)
 
         return (
             <ContactMessagesContent
                 initialMessages={messages}
-                initialTotalCount={totalCount}
+                initialFilteredCount={filteredTotalCount}
                 initialUnreadCount={unreadCount}
+                initialAllCount={allMessagesCount}
                 currentPage={page}
                 totalPages={totalPages}
                 itemsPerPage={ITEMS_PER_PAGE}
