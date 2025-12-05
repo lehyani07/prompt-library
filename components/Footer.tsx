@@ -8,11 +8,11 @@ export default function Footer() {
     const currentYear = new Date().getFullYear()
 
     return (
-        <footer className="relative mt-auto">
+        <footer className="relative isolate mt-auto">
             {/* Wave SVG Separator */}
-            <div className="absolute top-0 left-0 w-full overflow-hidden leading-none -translate-y-[99%] pointer-events-none">
+            <div className="pointer-events-none absolute top-0 left-0 w-full overflow-hidden leading-none -z-10">
                 <svg
-                    className="relative block w-[calc(100%+1.3px)] h-[60px] md:h-[120px]"
+                    className="relative block w-[calc(100%+1.3px)] h-[80px] md:h-[140px]"
                     data-name="Layer 1"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 1200 120"
@@ -25,7 +25,7 @@ export default function Footer() {
                 </svg>
             </div>
 
-            <div className="bg-neutral-text-primary pt-8 pb-12">
+            <div className="relative z-10 bg-neutral-text-primary pt-16 md:pt-24 pb-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {/* Brand Section */}

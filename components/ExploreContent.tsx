@@ -59,12 +59,12 @@ export default function ExploreContent({ prompts, categories, session }: Explore
     const currentPrompts = prompts.slice(startIndex, endIndex)
 
     return (
-        <div className="min-h-screen bg-neutral-bg-page font-sans text-neutral-text-primary relative overflow-hidden">
+        <div className="min-h-screen bg-neutral-bg-page font-sans text-neutral-text-primary relative overflow-hidden isolate">
             {/* Decorative background elements */}
-            <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-primary-base/10 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-tl from-secondary-base/10 to-transparent rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+            <div className="pointer-events-none absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-primary-base/10 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 z-0"></div>
+            <div className="pointer-events-none absolute bottom-0 right-0 w-96 h-96 bg-linear-to-tl from-secondary-base/10 to-transparent rounded-full blur-3xl translate-x-1/2 translate-y-1/2 z-0"></div>
 
-            <main className="relative mx-auto max-w-7xl px-4 pt-8 pb-24 md:px-8 md:pt-12 md:pb-32">
+            <main className="relative z-10 mx-auto max-w-7xl px-4 pt-8 pb-24 md:px-8 md:pt-12 md:pb-32">
 
                 {/* Header */}
                 <div className="mb-10 text-center">

@@ -11,8 +11,8 @@ export default function LibraryContent({ user }: LibraryContentProps) {
     const { t } = useLanguage()
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <main className="mx-auto max-w-7xl px-6 py-10">
+        <div className="min-h-screen bg-gray-50 relative isolate">
+            <main className="relative z-10 mx-auto max-w-7xl px-6 py-10 pb-20 md:pb-24">
                 <div className="mb-8 flex items-center justify-between">
                     <h1 className="text-3xl font-bold text-gray-900">{t.library.title}</h1>
                     <Link

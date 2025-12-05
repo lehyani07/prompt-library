@@ -35,12 +35,12 @@ export default function HomeContent({ session, featuredPrompts }: HomeContentPro
     return (
         <div className="min-h-screen bg-neutral-bg-page">
             {/* Hero Section with Featured Prompt Carousel */}
-            <section className="relative overflow-hidden bg-linear-to-br from-primary-base/10 via-secondary-base/10 to-purple-100 py-20">
+            <section className="relative isolate overflow-hidden bg-linear-to-br from-primary-base/10 via-secondary-base/10 to-purple-100 py-20">
                 {/* Decorative background elements */}
-                <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-primary-base/20 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-tl from-secondary-base/20 to-transparent rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+                <div className="pointer-events-none absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-primary-base/20 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 z-0"></div>
+                <div className="pointer-events-none absolute bottom-0 right-0 w-96 h-96 bg-linear-to-tl from-secondary-base/20 to-transparent rounded-full blur-3xl translate-x-1/2 translate-y-1/2 z-0"></div>
 
-                <main className="relative mx-auto max-w-7xl px-6">
+                <main className="relative z-10 mx-auto max-w-7xl px-6">
                     <div className="text-center mb-16">
                         <h1 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-base via-secondary-base to-purple-600 mb-6 leading-normal py-2">
                             {t.home.heroTitle}

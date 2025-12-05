@@ -53,3 +53,4 @@ export default function LogsPageContent({ logs }: { logs: Log[] }) {
 }
 
 
+

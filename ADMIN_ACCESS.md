@@ -156,3 +156,4 @@ npx ts-node --compiler-options '{"module":"CommonJS"}' prisma/seed.ts
 3. تأكد من تحديث قاعدة البيانات: `npx prisma migrate dev`
 
 
+
