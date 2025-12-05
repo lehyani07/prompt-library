@@ -194,7 +194,11 @@ export const dictionaries = {
             messagePlaceholder: "How can we help you?",
             namePlaceholder: "Your Name",
             emailPlaceholder: "you@example.com",
-            sendMessage: "Send Message"
+            sendMessage: "Send Message",
+            successTitle: "Message Sent Successfully",
+            successMessage: "Thank you! Your message has been sent successfully.",
+            errorTitle: "Failed to Send Message",
+            errorMessage: "An error occurred while sending your message. Please try again."
         },
         admin: {
             sidebar: {
@@ -207,7 +211,8 @@ export const dictionaries = {
                 settings: "Settings",
                 notifications: "Notifications",
                 backup: "Backup",
-                logs: "Logs"
+                logs: "Logs",
+                contactMessages: "Contact Messages"
             },
             header: {
                 backToSite: "Back to Site",
@@ -313,6 +318,14 @@ export const dictionaries = {
                 level: "Level",
                 message: "Message",
                 user: "User"
+            },
+            contactMessages: {
+                title: "Contact Messages",
+                all: "All",
+                unread: "Unread",
+                read: "Read",
+                new: "New",
+                noMessages: "No messages found"
             }
         }
     },
@@ -508,7 +521,11 @@ export const dictionaries = {
             messagePlaceholder: "كيف يمكننا مساعدتك؟",
             namePlaceholder: "اسمك",
             emailPlaceholder: "you@example.com",
-            sendMessage: "إرسال الرسالة"
+            sendMessage: "إرسال الرسالة",
+            successTitle: "تم الإرسال بنجاح",
+            successMessage: "شكراً لك! تم إرسال رسالتك بنجاح.",
+            errorTitle: "فشل إرسال الرسالة",
+            errorMessage: "حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى."
         },
         admin: {
             sidebar: {
@@ -521,7 +538,8 @@ export const dictionaries = {
                 settings: "الإعدادات",
                 notifications: "الإشعارات",
                 backup: "النسخ الاحتياطي",
-                logs: "السجلات"
+                logs: "السجلات",
+                contactMessages: "رسائل الاتصال"
             },
             header: {
                 backToSite: "العودة للموقع",
@@ -627,6 +645,14 @@ export const dictionaries = {
                 level: "المستوى",
                 message: "الرسالة",
                 user: "المستخدم"
+            },
+            contactMessages: {
+                title: "رسائل الاتصال",
+                all: "الكل",
+                unread: "غير مقروء",
+                read: "مقروء",
+                new: "جديد",
+                noMessages: "لا توجد رسائل"
             }
         }
     }

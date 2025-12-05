@@ -30,3 +30,44 @@ export async function sendVerificationEmail(email: string, token: string) {
         // Don't throw error to avoid blocking registration, but log it
     }
 }
+
+export async function sendContactEmail(name: string, email: string, message: string) {
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER || "admin@promptlibrary.com"
+    
+    try {
+        // Send email to admin
+        await transporter.sendMail({
+            from: process.env.SMTP_FROM,
+            to: adminEmail,
+            subject: `New Contact Form Submission from ${name}`,
+            html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message.replace(/\n/g, '<br>')}</p>
+        <hr>
+        <p><small>This message was sent from the Prompt Library contact form.</small></p>
+      `,
+        })
+
+        // Send confirmation email to user
+        await transporter.sendMail({
+            from: process.env.SMTP_FROM,
+            to: email,
+            subject: "Thank you for contacting Prompt Library",
+            html: `
+        <h2>Thank you for contacting us!</h2>
+        <p>Dear ${name},</p>
+        <p>We have received your message and will get back to you as soon as possible.</p>
+        <p>Your message:</p>
+        <p><em>${message.replace(/\n/g, '<br>')}</em></p>
+        <hr>
+        <p><small>This is an automated confirmation email. Please do not reply to this message.</small></p>
+      `,
+        })
+    } catch (error) {
+        console.error("Failed to send contact email:", error)
+        throw error
+    }
+}

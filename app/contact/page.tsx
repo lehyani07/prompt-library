@@ -1,12 +1,31 @@
 'use client'
 
+import { useState } from "react"
 import { useLanguage } from "@/lib/i18n/LanguageContext"
+import Toast from "@/components/ui/Toast"
+
+interface ToastData {
+    type: 'success' | 'error'
+    title: string
+    message: string
+}
 
 export default function ContactPage() {
     const { t } = useLanguage()
+    const [toast, setToast] = useState<ToastData | null>(null)
 
     return (
         <div className="min-h-screen bg-neutral-bg-page font-sans text-neutral-text-primary relative overflow-hidden">
+            {/* Toast Notification */}
+            {toast && (
+                <Toast
+                    type={toast.type}
+                    title={toast.title}
+                    message={toast.message}
+                    onClose={() => setToast(null)}
+                />
+            )}
+
             {/* Decorative background elements */}
             <div className="absolute top-0 left-0 w-96 h-96 bg-linear-to-br from-primary-base/10 to-transparent rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-linear-to-tl from-secondary-base/10 to-transparent rounded-full blur-3xl translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
@@ -43,14 +62,27 @@ export default function ContactPage() {
                             })
 
                             if (res.ok) {
-                                alert(t.contact.message + ' ' + t.prompt.ratingSubmitted) // Using existing success message for now
+                                setToast({
+                                    type: 'success',
+                                    title: t.contact.successTitle,
+                                    message: t.contact.successMessage
+                                })
                                 form.reset()
                             } else {
-                                alert(t.common.error)
+                                const data = await res.json().catch(() => ({}))
+                                setToast({
+                                    type: 'error',
+                                    title: t.contact.errorTitle,
+                                    message: data.error || t.contact.errorMessage
+                                })
                             }
                         } catch (err) {
                             console.error(err)
-                            alert(t.common.error)
+                            setToast({
+                                type: 'error',
+                                title: t.contact.errorTitle,
+                                message: t.contact.errorMessage
+                            })
                         } finally {
                             submitBtn.disabled = false
                             submitBtn.innerText = originalText

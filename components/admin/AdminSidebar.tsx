@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
 import { useLanguage } from "@/lib/i18n/LanguageContext"
 import {
     HomeIcon,
@@ -12,13 +13,44 @@ import {
     CogIcon,
     BellIcon,
     ArchiveBoxIcon,
-    ClipboardDocumentListIcon
+    ClipboardDocumentListIcon,
+    EnvelopeIcon
 } from "@heroicons/react/24/outline"
 
 export default function AdminSidebar() {
     const pathname = usePathname()
     const { t, direction } = useLanguage()
     const isRTL = direction === 'rtl'
+    const [unreadCount, setUnreadCount] = useState<number>(0)
+
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            try {
+                const res = await fetch('/api/admin/contact-messages?count=true')
+                if (res.ok) {
+                    const data = await res.json()
+                    setUnreadCount(data.unreadCount || 0)
+                }
+            } catch (err) {
+                console.error('Failed to fetch unread count:', err)
+            }
+        }
+
+        fetchUnreadCount()
+        // Refresh count every 30 seconds
+        const interval = setInterval(fetchUnreadCount, 30000)
+        
+        // Listen for custom event when messages are updated
+        const handleMessagesUpdate = () => {
+            fetchUnreadCount()
+        }
+        window.addEventListener('contactMessagesUpdated', handleMessagesUpdate)
+        
+        return () => {
+            clearInterval(interval)
+            window.removeEventListener('contactMessagesUpdated', handleMessagesUpdate)
+        }
+    }, [pathname])
 
     const navigation = [
         { name: t.admin.sidebar.dashboard, href: '/admin', icon: HomeIcon },
@@ -27,6 +59,7 @@ export default function AdminSidebar() {
         { name: t.admin.sidebar.categories, href: '/admin/categories', icon: TagIcon },
         { name: t.admin.sidebar.analytics, href: '/admin/analytics', icon: ChartBarIcon },
         { name: t.admin.sidebar.settings, href: '/admin/settings', icon: CogIcon },
+        { name: t.admin.sidebar.contactMessages, href: '/admin/contact-messages', icon: EnvelopeIcon },
         { name: t.admin.sidebar.notifications, href: '/admin/notifications', icon: BellIcon },
         { name: t.admin.sidebar.backup, href: '/admin/backup', icon: ArchiveBoxIcon },
         { name: t.admin.sidebar.logs, href: '/admin/logs', icon: ClipboardDocumentListIcon },
@@ -54,12 +87,13 @@ export default function AdminSidebar() {
             <nav className="p-4 space-y-2 overflow-y-auto h-[calc(100vh-88px)]">
                 {navigation.map((item) => {
                     const isActive = pathname === item.href
+                    const showBadge = item.href === '/admin/contact-messages' && unreadCount > 0
                     return (
                         <Link
                             key={item.href}
                             href={item.href}
                             className={`
-                                flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group
+                                flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group relative
                                 ${isActive
                                     ? 'bg-linear-to-r from-primary-base to-secondary-base text-white shadow-button'
                                     : 'text-neutral-text-secondary hover:bg-primary-base/10 hover:text-primary-base'
@@ -68,6 +102,17 @@ export default function AdminSidebar() {
                         >
                             <item.icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-white' : 'text-neutral-text-secondary group-hover:text-primary-base'}`} />
                             <span className="font-medium text-sm flex-1">{item.name}</span>
+                            {showBadge && (
+                                <span className={`
+                                    flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold
+                                    ${isActive 
+                                        ? 'bg-white text-primary-base' 
+                                        : 'bg-red-500 text-white'
+                                    }
+                                `}>
+                                    {unreadCount > 99 ? '99+' : unreadCount}
+                                </span>
+                            )}
                         </Link>
                     )
                 })}
