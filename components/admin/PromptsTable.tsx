@@ -24,13 +24,13 @@ interface Prompt {
     }
 }
 
-export default function PromptsTable({ 
-    prompts, 
-    currentPage, 
-    totalPages, 
+export default function PromptsTable({
+    prompts,
+    currentPage,
+    totalPages,
     totalCount,
     itemsPerPage
-}: { 
+}: {
     prompts: Prompt[]
     currentPage: number
     totalPages: number
@@ -93,7 +93,7 @@ export default function PromptsTable({
     const getPageNumbers = () => {
         const pages: (number | string)[] = []
         const maxVisible = 5
-        
+
         if (totalPages <= maxVisible) {
             // Show all pages if total pages <= maxVisible
             for (let i = 1; i <= totalPages; i++) {
@@ -102,38 +102,38 @@ export default function PromptsTable({
         } else {
             // Always show first page
             pages.push(1)
-            
+
             let start = Math.max(2, currentPage - 1)
             let end = Math.min(totalPages - 1, currentPage + 1)
-            
+
             // Adjust range if near start or end
             if (currentPage <= 3) {
                 end = 4
             } else if (currentPage >= totalPages - 2) {
                 start = totalPages - 3
             }
-            
+
             // Add ellipsis before if needed
             if (start > 2) {
                 pages.push('...')
             }
-            
+
             // Add middle pages
             for (let i = start; i <= end; i++) {
                 pages.push(i)
             }
-            
+
             // Add ellipsis after if needed
             if (end < totalPages - 1) {
                 pages.push('...')
             }
-            
+
             // Always show last page
             if (totalPages > 1) {
                 pages.push(totalPages)
             }
         }
-        
+
         return pages
     }
 
@@ -145,67 +145,71 @@ export default function PromptsTable({
                         {t.admin.prompts.noPrompts}
                     </div>
                 ) : (
-                    <div className="flex-1 w-full overflow-x-hidden">
-                        <table className="w-full table-fixed border-collapse">
-                            <thead className="bg-gray-50">
-                                <tr className="border-b border-gray-200">
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-r border-gray-200 w-10 ${isRTL ? 'text-right' : 'text-left'}`}>#</th>
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '20%' }}>{t.admin.prompts.titleColumn}</th>
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '18%' }}>{t.admin.prompts.author}</th>
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '12%' }}>{t.admin.prompts.category}</th>
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '10%' }}>{t.admin.prompts.status}</th>
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '10%' }}>{t.admin.prompts.stats}</th>
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '12%' }}>{t.admin.prompts.created}</th>
-                                    <th className={`px-2 py-2.5 text-[10px] font-semibold text-gray-600 uppercase tracking-wider ${isRTL ? 'text-left' : 'text-right'}`} style={{ width: '8%' }}>{t.admin.prompts.actions}</th>
+                    <div className="flex-1 overflow-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-100 sticky top-0 z-10">
+                                <tr>
+                                    <th className={`px-3 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '50px' }}>#</th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 ${isRTL ? 'text-right' : 'text-left'}`} style={{ minWidth: '200px' }}>{t.admin.prompts.titleColumn}</th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 ${isRTL ? 'text-right' : 'text-left'}`} style={{ minWidth: '180px' }}>{t.admin.prompts.author}</th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider border-r border-gray-300 ${isRTL ? 'text-right' : 'text-left'}`} style={{ minWidth: '120px' }}>{t.admin.prompts.category}</th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider text-center border-r border-gray-300`} style={{ width: '100px' }}>{t.admin.prompts.status}</th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider text-center border-r border-gray-300`} style={{ width: '80px' }}>{t.admin.prompts.stats}</th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-100 border-l border-r border-gray-300 ${isRTL ? 'text-right' : 'text-left'}`} style={{ width: '110px' }}>{t.admin.prompts.created}</th>
+                                    <th className={`px-4 py-2.5 text-xs font-semibold text-gray-700 uppercase tracking-wider text-center border-l border-r border-gray-300`} style={{ width: '80px' }}>{t.admin.prompts.actions}</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {prompts.map((prompt, index) => (
-                                    <tr key={prompt.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                        <td className={`px-2 py-2.5 whitespace-nowrap text-xs text-gray-500 border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`}>
+                                    <tr key={prompt.id} className="hover:bg-gray-50 transition-colors">
+                                        <td className={`px-3 py-2.5 whitespace-nowrap text-sm text-gray-500 border-r border-gray-200 ${isRTL ? 'text-right' : 'text-left'}`}>
                                             {(currentPage - 1) * itemsPerPage + index + 1}
                                         </td>
-                                        <td className="px-2 py-2.5 text-xs text-gray-900 border-r border-gray-200">
-                                            <div className="truncate" title={prompt.title}>
+                                        <td className="px-4 py-2.5 border-r border-gray-200">
+                                            <div className="text-sm font-medium text-gray-900 line-clamp-2" title={prompt.title}>
                                                 {prompt.title}
                                             </div>
                                         </td>
-                                        <td className="px-2 py-2.5 border-r border-gray-200">
-                                            <div className="text-xs text-gray-900 truncate" title={prompt.author.name || prompt.author.email}>
+                                        <td className="px-4 py-2.5 border-r border-gray-200">
+                                            <div className="text-sm text-gray-900 truncate" title={prompt.author.name || prompt.author.email}>
                                                 {prompt.author.name || t.admin.prompts.unknown}
                                             </div>
-                                            <div className="text-[10px] text-gray-500 truncate mt-0.5" title={prompt.author.email}>
+                                            <div className="text-xs text-gray-500 truncate mt-0.5" title={prompt.author.email}>
                                                 {prompt.author.email}
                                             </div>
                                         </td>
-                                        <td className="px-2 py-2.5 whitespace-nowrap text-xs text-gray-500 border-r border-gray-200">
-                                            <div className="truncate" title={prompt.category?.name || t.admin.prompts.uncategorized}>
+                                        <td className="px-4 py-2.5 whitespace-nowrap border-r border-gray-200">
+                                            <div className="text-sm text-gray-500 truncate" title={prompt.category?.name || t.admin.prompts.uncategorized}>
                                                 {prompt.category?.name || t.admin.prompts.uncategorized}
                                             </div>
                                         </td>
-                                        <td className="px-2 py-2.5 whitespace-nowrap border-r border-gray-200">
+                                        <td className="px-4 py-2.5 whitespace-nowrap text-center border-r border-gray-200">
                                             <button
                                                 onClick={() => togglePublic(prompt.id, prompt.isPublic)}
                                                 disabled={isLoading || isPending}
-                                                className={`px-1.5 py-0.5 inline-flex text-[10px] leading-4 font-semibold rounded-full cursor-pointer
-                                                ${prompt.isPublic ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} 
+                                                className={`px-2.5 py-1 inline-flex text-xs leading-4 font-semibold rounded-full cursor-pointer transition-colors
+                                                ${prompt.isPublic ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'} 
                                                 ${isLoading || isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             >
                                                 {prompt.isPublic ? t.admin.prompts.public : t.admin.prompts.private}
                                             </button>
                                         </td>
-                                        <td className="px-2 py-2.5 whitespace-nowrap text-xs text-gray-500 border-r border-gray-200">
-                                            <div className="text-[10px] leading-tight">❤️ {prompt._count.favorites}</div>
-                                            <div className="text-[10px] leading-tight">⭐ {prompt._count.ratings}</div>
+                                        <td className="px-4 py-2.5 whitespace-nowrap text-center border-r border-gray-200">
+                                            <div className="text-xs text-gray-500 leading-tight">
+                                                <div>❤️ {prompt._count.favorites}</div>
+                                                <div className="mt-0.5">⭐ {prompt._count.ratings}</div>
+                                            </div>
                                         </td>
-                                        <td className="px-2 py-2.5 whitespace-nowrap text-xs text-gray-500 border-r border-gray-200">
-                                            <div className="text-[10px]">{new Date(prompt.createdAt).toLocaleDateString()}</div>
+                                        <td className="px-4 py-2.5 whitespace-nowrap border-l border-r border-gray-200">
+                                            <div className="text-sm text-gray-500">
+                                                {new Date(prompt.createdAt).toLocaleDateString()}
+                                            </div>
                                         </td>
-                                        <td className={`px-2 py-2.5 whitespace-nowrap text-xs font-medium ${isRTL ? 'text-left' : 'text-right'}`}>
+                                        <td className="px-4 py-2.5 whitespace-nowrap text-center border-l border-r border-gray-200">
                                             <button
                                                 onClick={() => deletePrompt(prompt.id)}
                                                 disabled={isLoading || isPending}
-                                                className={`text-red-600 hover:text-red-900 text-[10px] ${isLoading || isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                className={`text-red-600 hover:text-red-900 text-sm font-medium transition-colors ${isLoading || isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             >
                                                 {t.admin.prompts.delete}
                                             </button>
@@ -224,19 +228,18 @@ export default function PromptsTable({
                     {/* Previous Button */}
                     <Link
                         href={createPageUrl(Math.max(1, currentPage - 1))}
-                        className={`relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium rounded-md ${
-                            currentPage === 1
-                                ? 'text-gray-300 cursor-not-allowed opacity-50'
-                                : 'text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium rounded-md ${currentPage === 1
+                            ? 'text-gray-300 cursor-not-allowed opacity-50'
+                            : 'text-gray-700 hover:bg-gray-50'
+                            }`}
                         aria-disabled={currentPage === 1}
                     >
                         <span className="sr-only">Previous</span>
-                        <svg 
-                            className={`h-5 w-5 ${isRTL ? 'rotate-180' : ''}`} 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            viewBox="0 0 20 20" 
-                            fill="currentColor" 
+                        <svg
+                            className={`h-5 w-5 ${isRTL ? 'rotate-180' : ''}`}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
                             aria-hidden="true"
                         >
                             <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -254,11 +257,10 @@ export default function PromptsTable({
                                 <Link
                                     key={page}
                                     href={createPageUrl(page as number)}
-                                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                        currentPage === page
-                                            ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
-                                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                                    }`}
+                                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === page
+                                        ? 'z-10 bg-indigo-50 border-indigo-500 text-indigo-600'
+                                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                        }`}
                                 >
                                     {page}
                                 </Link>
@@ -269,19 +271,18 @@ export default function PromptsTable({
                     {/* Next Button */}
                     <Link
                         href={createPageUrl(Math.min(totalPages, currentPage + 1))}
-                        className={`relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium rounded-md ${
-                            currentPage === totalPages
-                                ? 'text-gray-300 cursor-not-allowed opacity-50'
-                                : 'text-gray-700 hover:bg-gray-50'
-                        }`}
+                        className={`relative inline-flex items-center px-3 py-2 border border-gray-300 bg-white text-sm font-medium rounded-md ${currentPage === totalPages
+                            ? 'text-gray-300 cursor-not-allowed opacity-50'
+                            : 'text-gray-700 hover:bg-gray-50'
+                            }`}
                         aria-disabled={currentPage === totalPages}
                     >
                         <span className="sr-only">Next</span>
-                        <svg 
-                            className={`h-5 w-5 ${isRTL ? 'rotate-180' : ''}`} 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            viewBox="0 0 20 20" 
-                            fill="currentColor" 
+                        <svg
+                            className={`h-5 w-5 ${isRTL ? 'rotate-180' : ''}`}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
                             aria-hidden="true"
                         >
                             <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />

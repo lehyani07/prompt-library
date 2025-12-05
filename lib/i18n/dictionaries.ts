@@ -111,6 +111,7 @@ export const dictionaries = {
         },
         library: {
             title: "My Library",
+            subtitle: "Manage your prompts, favorites, and collections all in one place.",
             tabs: {
                 myPrompts: "My Prompts",
                 favorites: "Favorites",
@@ -409,6 +410,7 @@ export const dictionaries = {
         },
         library: {
             title: "مكتبتي",
+            subtitle: "أدِر أوامرك ومفضلاتك ومجموعاتك في مكان واحد.",
             tabs: {
                 myPrompts: "أوامري",
                 favorites: "المفضلة",

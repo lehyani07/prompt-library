@@ -33,19 +33,20 @@ export default function AdminSidebar() {
     ]
 
     return (
-        <aside 
-            className={`fixed top-0 w-64 h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white z-10 shadow-2xl ${
-                isRTL ? 'right-0' : 'left-0'
-            }`}
+        <aside
+            className={`fixed top-0 w-64 h-screen bg-white/80 backdrop-blur-md text-neutral-text-primary z-10 shadow-card border-r border-white/20 ${isRTL ? 'right-0' : 'left-0'
+                }`}
             dir={direction}
         >
             {/* Header */}
-            <div className="p-6 border-b border-gray-700/50">
+            <div className="p-6 border-b border-neutral-border-subtle">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center">
-                        <span className="text-xl font-bold">A</span>
+                    <div className="w-10 h-10 bg-linear-to-r from-primary-base to-secondary-base rounded-lg flex items-center justify-center shadow-button">
+                        <span className="text-xl font-bold text-white">A</span>
                     </div>
-                    <h2 className="text-xl font-bold text-white">{t.admin.sidebar.panel}</h2>
+                    <h2 className="text-xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-base to-secondary-base">
+                        {t.admin.sidebar.panel}
+                    </h2>
                 </div>
             </div>
 
@@ -58,27 +59,22 @@ export default function AdminSidebar() {
                             key={item.href}
                             href={item.href}
                             className={`
-                                flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group
+                                flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group
                                 ${isActive
-                                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/50'
-                                    : 'text-gray-300 hover:bg-gray-800/70 hover:text-white'
+                                    ? 'bg-linear-to-r from-primary-base to-secondary-base text-white shadow-button'
+                                    : 'text-neutral-text-secondary hover:bg-primary-base/10 hover:text-primary-base'
                                 }
-                                ${!isActive && !isRTL ? 'hover:translate-x-1' : ''}
-                                ${!isActive && isRTL ? 'hover:translate-x-[-4px]' : ''}
                             `}
                         >
-                            <item.icon className={`h-5 w-5 flex-shrink-0 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`} />
+                            <item.icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-white' : 'text-neutral-text-secondary group-hover:text-primary-base'}`} />
                             <span className="font-medium text-sm flex-1">{item.name}</span>
-                            {isActive && (
-                                <div className={`w-1.5 h-1.5 rounded-full bg-white ${isRTL ? 'mr-auto' : 'ml-auto'}`} />
-                            )}
                         </Link>
                     )
                 })}
             </nav>
 
             {/* Footer decoration */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-primary-base via-secondary-base to-primary-base" />
         </aside>
     )
 }

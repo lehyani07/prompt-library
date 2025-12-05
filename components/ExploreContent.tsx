@@ -204,10 +204,9 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                                 <div className="relative z-10 mt-4 pt-4 border-t border-neutral-border-subtle flex items-center justify-end">
                                                     <Link
                                                         href={`/prompts/${prompt.id}`}
-                                                        className="text-sm font-semibold text-primary-base hover:text-primary-hover transition-colors flex items-center gap-1"
+                                                        className="text-sm font-semibold text-primary-base hover:text-primary-hover transition-colors"
                                                     >
                                                         {t.common.viewDetails}
-                                                        <span className="text-lg leading-none">→</span>
                                                     </Link>
                                                 </div>
                                             </div>
@@ -224,7 +223,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                         disabled={currentPage === 1}
                                         className="px-4 py-2 rounded-lg bg-white border border-neutral-border-subtle text-neutral-text-primary font-medium hover:bg-primary-base hover:text-white hover:border-primary-base transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-neutral-text-primary shadow-sm"
                                     >
-                                        ← {t.common.prev}
+                                        {t.common.prev}
                                     </button>
 
                                     <div className="flex gap-1">
@@ -247,7 +246,7 @@ export default function ExploreContent({ prompts, categories, session }: Explore
                                         disabled={currentPage === totalPages}
                                         className="px-4 py-2 rounded-lg bg-white border border-neutral-border-subtle text-neutral-text-primary font-medium hover:bg-primary-base hover:text-white hover:border-primary-base transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-neutral-text-primary shadow-sm"
                                     >
-                                        {t.common.next} →
+                                        {t.common.next}
                                     </button>
                                 </div>
                             )}
