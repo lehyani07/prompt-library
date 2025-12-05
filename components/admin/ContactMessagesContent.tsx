@@ -56,6 +56,11 @@ export default function ContactMessagesContent({
         filterRead === undefined ? "all" : filterRead ? "read" : "unread"
     )
     const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null)
+    const [confirmModal, setConfirmModal] = useState<{
+        isOpen: boolean
+        type: 'delete' | 'markAll'
+        id?: string
+    }>({ isOpen: false, type: 'delete' })
 
     // Sync state when props change (e.g. new search params fetched new data)
     useEffect(() => {
@@ -167,29 +172,33 @@ export default function ContactMessagesContent({
         }
     }
 
-    const handleMarkAllAsRead = async () => {
+    const handleMarkAllAsReadClick = () => {
         if (unreadCount === 0) return
+        setConfirmModal({ isOpen: true, type: 'markAll' })
+    }
 
-        if (!confirm(t.admin.contactMessages?.confirmMarkAllAsRead || "Are you sure you want to mark all messages as read?")) {
-            return
-        }
-
+    const executeMarkAllAsRead = async () => {
         setIsMarkingAll(true)
+        setConfirmModal(prev => ({ ...prev, isOpen: false }))
         try {
             const res = await fetch('/api/admin/contact-messages?markAllAsRead=true', {
                 method: "PATCH",
             })
 
             if (res.ok) {
-                setMessages(messages.map(msg => ({ ...msg, read: true })))
+                // Determine new visible messages based on current filter
+                if (selectedFilter === "unread") {
+                    setMessages([])
+                    setTotalCount(0)
+                } else {
+                    setMessages(messages.map(msg => ({ ...msg, read: true })))
+                }
+
                 setUnreadCount(0) // All unread become 0
 
                 window.dispatchEvent(new CustomEvent('contactMessagesUpdated'))
 
-                // If we are viewing "Unread" tab and just marked all as read, 
-                // the list should technically become empty or navigate away if strictly following filter rules
                 if (selectedFilter === "unread") {
-                    // Refreshing the page/filter might be best to reflect backend state
                     router.refresh()
                 }
             }
@@ -200,10 +209,12 @@ export default function ContactMessagesContent({
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this message?")) {
-            return
-        }
+    const handleDeleteClick = (id: string) => {
+        setConfirmModal({ isOpen: true, type: 'delete', id })
+    }
+
+    const executeDelete = async (id: string) => {
+        setConfirmModal(prev => ({ ...prev, isOpen: false }))
 
         try {
             const res = await fetch(`/api/admin/contact-messages?id=${id}`, {
@@ -347,9 +358,9 @@ export default function ContactMessagesContent({
                 </div>
                 {unreadCount > 0 && (
                     <button
-                        onClick={handleMarkAllAsRead}
+                        onClick={handleMarkAllAsReadClick}
                         disabled={isMarkingAll}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg font-medium text-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-4 py-2 bg-primary-base text-white rounded-lg font-medium text-sm hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <CheckIcon className="h-5 w-5" />
                         {isMarkingAll
@@ -421,7 +432,7 @@ export default function ContactMessagesContent({
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation()
-                                            handleDelete(message.id)
+                                            handleDeleteClick(message.id)
                                         }}
                                         className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full"
                                         title={t.common.delete}
@@ -486,7 +497,7 @@ export default function ContactMessagesContent({
                                     {selectedMessage.read ? <EnvelopeIcon className="h-5 w-5" /> : <EnvelopeOpenIcon className="h-5 w-5" />}
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(selectedMessage.id)}
+                                    onClick={() => handleDeleteClick(selectedMessage.id)}
                                     className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                     title={t.common.delete}
                                 >
@@ -521,6 +532,55 @@ export default function ContactMessagesContent({
                                 <EnvelopeIcon className="w-4 h-4" />
                                 {t.common.reply || "Reply"}
                             </a>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirmation Modal */}
+            {confirmModal.isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-sm" onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}>
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
+                        <div className="p-6 text-center">
+                            <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full mb-4 ${confirmModal.type === 'delete' ? 'bg-red-100' : 'bg-blue-100'}`}>
+                                {confirmModal.type === 'delete' ? (
+                                    <TrashIcon className="h-8 w-8 text-red-600" />
+                                ) : (
+                                    <CheckIcon className="h-8 w-8 text-blue-600" />
+                                )}
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                                {confirmModal.type === 'delete' ? (t.common.delete || "Delete Item") : (t.admin.contactMessages?.markAllAsRead || "Mark All as Read")}
+                            </h3>
+                            <p className="text-gray-500 mb-6">
+                                {confirmModal.type === 'delete'
+                                    ? "Are you sure you want to delete this message? This action cannot be undone."
+                                    : (t.admin.contactMessages?.confirmMarkAllAsRead || "Are you sure you want to mark all messages as read?")
+                                }
+                            </p>
+                            <div className="flex gap-3 justify-center">
+                                <button
+                                    onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                                    className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                                >
+                                    {t.common.cancel || "Cancel"}
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        if (confirmModal.type === 'delete' && confirmModal.id) {
+                                            executeDelete(confirmModal.id)
+                                        } else if (confirmModal.type === 'markAll') {
+                                            executeMarkAllAsRead()
+                                        }
+                                    }}
+                                    className={`px-5 py-2.5 rounded-lg text-white font-medium shadow-sm transition-colors ${confirmModal.type === 'delete'
+                                        ? 'bg-red-600 hover:bg-red-700'
+                                        : 'bg-primary-base hover:bg-primary-dark'
+                                        }`}
+                                >
+                                    {confirmModal.type === 'delete' ? (t.common.delete || "Delete") : "Confirm"}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
