@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useLanguage } from "@/lib/i18n/LanguageContext"
 import Toast from "@/components/ui/Toast"
 import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
 
 interface ToastData {
     type: 'success' | 'error'
@@ -15,9 +16,11 @@ export default function UserSettings() {
     const { t } = useLanguage()
     const router = useRouter()
     const [toast, setToast] = useState<ToastData | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
 
     // Profile State
-    const [name, setName] = useState("Demo User")
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
     const [isProfileLoading, setIsProfileLoading] = useState(false)
 
     // Password State
@@ -30,20 +33,75 @@ export default function UserSettings() {
     // Delete Account State
     const [isDeleting, setIsDeleting] = useState(false)
 
-    const handleUpdateProfile = (e: React.FormEvent) => {
+    // Fetch user profile on mount
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const res = await fetch("/api/user")
+                if (res.ok) {
+                    const data = await res.json()
+                    setName(data.name || "")
+                    setEmail(data.email || "")
+                } else if (res.status === 401) {
+                    // Not authenticated, redirect to login
+                    router.push("/auth/login")
+                }
+            } catch (error) {
+                console.error("Failed to fetch profile:", error)
+                setToast({
+                    type: 'error',
+                    title: t.common.error || "Error",
+                    message: t.userSettings.loadError || "Failed to load profile"
+                })
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchProfile()
+    }, [router, t])
+
+    const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsProfileLoading(true)
-        setTimeout(() => {
-            setIsProfileLoading(false)
-            setToast({
-                type: 'success',
-                title: t.common.save,
-                message: t.userSettings.profileUpdated
+
+        try {
+            const res = await fetch("/api/user", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name }),
             })
-        }, 1000)
+
+            const data = await res.json()
+
+            if (res.ok) {
+                setToast({
+                    type: 'success',
+                    title: t.common.save,
+                    message: t.userSettings.profileUpdated
+                })
+            } else {
+                setToast({
+                    type: 'error',
+                    title: t.common.error || "Error",
+                    message: data.error || t.userSettings.updateError || "Failed to update profile"
+                })
+            }
+        } catch (error) {
+            console.error("Update profile error:", error)
+            setToast({
+                type: 'error',
+                title: t.common.error || "Error",
+                message: t.userSettings.updateError || "Failed to update profile"
+            })
+        } finally {
+            setIsProfileLoading(false)
+        }
     }
 
-    const handleChangePassword = (e: React.FormEvent) => {
+    const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault()
         setPasswordError("")
 
@@ -58,28 +116,81 @@ export default function UserSettings() {
         }
 
         setIsPasswordLoading(true)
-        setTimeout(() => {
-            setIsPasswordLoading(false)
-            setCurrentPassword("")
-            setNewPassword("")
-            setConfirmNewPassword("")
-            setToast({
-                type: 'success',
-                title: t.common.save,
-                message: t.userSettings.passwordUpdated
+
+        try {
+            const res = await fetch("/api/user/password", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    currentPassword,
+                    newPassword,
+                }),
             })
-        }, 1500)
+
+            const data = await res.json()
+
+            if (res.ok) {
+                setCurrentPassword("")
+                setNewPassword("")
+                setConfirmNewPassword("")
+                setToast({
+                    type: 'success',
+                    title: t.common.save,
+                    message: t.userSettings.passwordUpdated
+                })
+            } else {
+                setPasswordError(data.error || t.userSettings.passwordUpdateError || "Failed to change password")
+            }
+        } catch (error) {
+            console.error("Change password error:", error)
+            setPasswordError(t.userSettings.passwordUpdateError || "Failed to change password")
+        } finally {
+            setIsPasswordLoading(false)
+        }
     }
 
-    const handleDeleteAccount = () => {
+    const handleDeleteAccount = async () => {
         if (!confirm(t.userSettings.deleteConfirm)) return
 
         setIsDeleting(true)
-        setTimeout(() => {
+
+        try {
+            const res = await fetch("/api/user/delete", {
+                method: "DELETE",
+            })
+
+            if (res.ok) {
+                // Sign out and redirect to home
+                await signOut({ redirect: false })
+                router.push("/")
+            } else {
+                const data = await res.json()
+                setToast({
+                    type: 'error',
+                    title: t.common.error || "Error",
+                    message: data.error || t.userSettings.deleteError || "Failed to delete account"
+                })
+                setIsDeleting(false)
+            }
+        } catch (error) {
+            console.error("Delete account error:", error)
+            setToast({
+                type: 'error',
+                title: t.common.error || "Error",
+                message: t.userSettings.deleteError || "Failed to delete account"
+            })
             setIsDeleting(false)
-            router.push("/")
-            // In a real app, this would also sign out the user
-        }, 2000)
+        }
+    }
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen bg-neutral-bg-page flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-base"></div>
+            </div>
+        )
     }
 
     return (
@@ -110,6 +221,18 @@ export default function UserSettings() {
                             {t.userSettings.profile}
                         </h2>
                         <form onSubmit={handleUpdateProfile} className="space-y-4">
+                            <div>
+                                <label htmlFor="email" className="block text-sm font-medium text-neutral-text-secondary mb-2">
+                                    {t.auth.email}
+                                </label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value={email}
+                                    disabled
+                                    className="w-full rounded-lg border border-neutral-border-subtle bg-gray-50 px-4 py-2.5 text-neutral-text-secondary cursor-not-allowed"
+                                />
+                            </div>
                             <div>
                                 <label htmlFor="name" className="block text-sm font-medium text-neutral-text-secondary mb-2">
                                     {t.auth.name}

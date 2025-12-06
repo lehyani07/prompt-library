@@ -22,7 +22,7 @@
     "@upstash/redis": "^1.28.1",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.1.0",
-    "next": "16.0.5",
+    "next": "^16.0.7",
     "next-auth": "^5.0.0-beta.30",
     "nodemailer": "^7.0.11",
     "prisma": "^5.22.0",
