@@ -51,9 +51,5 @@ body {
   font-family: var(--font-almarai), 'Inter', 'SF Pro Text', 'Roboto', system-ui, sans-serif;
   margin: 0;
   padding: 0;
-}
-
-/* Admin pages - dark background */
-body.admin-page {
-  background-color: #111827;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }

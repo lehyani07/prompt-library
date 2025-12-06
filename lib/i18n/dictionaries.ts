@@ -243,6 +243,12 @@ export const dictionaries = {
             passwordUpdated: "Password updated successfully!",
             accountDeleted: "Your account has been deleted."
         },
+        error: {
+            title: "Something went wrong",
+            description: "An unexpected error occurred. Please try again.",
+            reload: "Reload Page",
+            tryAgain: "Try Again"
+        },
         errors: {
             notFound: {
                 title: "Page Not Found",
@@ -629,6 +635,12 @@ export const dictionaries = {
             profileUpdated: "تم تحديث الملف الشخصي بنجاح!",
             passwordUpdated: "تم تحديث كلمة المرور بنجاح!",
             accountDeleted: "تم حذف حسابك."
+        },
+        error: {
+            title: "حدث خطأ ما",
+            description: "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+            reload: "إعادة تحميل الصفحة",
+            tryAgain: "حاول مرة أخرى"
         },
         errors: {
             notFound: {

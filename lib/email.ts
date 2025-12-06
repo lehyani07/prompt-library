@@ -33,7 +33,7 @@ export async function sendVerificationEmail(email: string, token: string) {
 
 export async function sendContactEmail(name: string, email: string, message: string) {
     const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER || "admin@promptlibrary.com"
-    
+
     try {
         // Send email to admin
         await transporter.sendMail({
@@ -68,6 +68,20 @@ export async function sendContactEmail(name: string, email: string, message: str
         })
     } catch (error) {
         console.error("Failed to send contact email:", error)
+        throw error
+    }
+}
+
+export async function sendEmail({ to, subject, html }: { to: string; subject: string; html: string }) {
+    try {
+        await transporter.sendMail({
+            from: process.env.SMTP_FROM,
+            to,
+            subject,
+            html,
+        })
+    } catch (error) {
+        console.error("Failed to send email:", error)
         throw error
     }
 }
