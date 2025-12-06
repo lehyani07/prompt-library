@@ -26,7 +26,9 @@ export default function DashboardContent({
 
     return (
         <div className="space-y-8">
-            <h1 className="text-3xl font-bold text-gray-900">{t.admin.dashboard.title}</h1>
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary-base to-secondary-base">
+                {t.admin.dashboard.title}
+            </h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <StatsCard
                     title={t.admin.dashboard.totalUsers}

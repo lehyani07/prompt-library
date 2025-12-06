@@ -36,6 +36,12 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SessionProvider from "@/components/providers/SessionProvider";
 import ConditionalLayout from "@/components/ConditionalLayout";
+import { checkSecurityConfig } from "@/lib/security-check";
+
+// Run security checks on app startup
+if (typeof window === 'undefined') {
+  checkSecurityConfig();
+}
 
 export default async function RootLayout({
   children,

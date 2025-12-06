@@ -4,6 +4,8 @@ import Link from "next/link"
 import { useLanguage } from "@/lib/i18n/LanguageContext"
 import { getCategoryTranslation } from "@/lib/i18n/categoryTranslations"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
+import CreateCollectionModal from "@/components/collections/CreateCollectionModal"
 
 interface LibraryContentProps {
     user: any
@@ -13,7 +15,9 @@ type TabType = 'prompts' | 'favorites' | 'collections'
 
 export default function LibraryContent({ user }: LibraryContentProps) {
     const { t, language } = useLanguage()
+    const router = useRouter()
     const [activeTab, setActiveTab] = useState<TabType>('prompts')
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 9
 
@@ -95,6 +99,31 @@ export default function LibraryContent({ user }: LibraryContentProps) {
 
                 {/* Content Grid */}
                 <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-primary-base/10 shadow-floating p-4 md:p-6">
+                    {/* Actions Bar */}
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold text-neutral-text-primary">
+                            {activeTab === 'prompts' && t.library.tabs.myPrompts}
+                            {activeTab === 'favorites' && t.library.tabs.favorites}
+                            {activeTab === 'collections' && t.library.tabs.collections}
+                        </h2>
+                        {activeTab === 'prompts' && (
+                            <Link
+                                href="/prompts/new"
+                                className="px-4 py-2 bg-linear-to-r from-primary-base to-secondary-base text-white rounded-lg font-semibold hover:shadow-button transition-all text-sm"
+                            >
+                                {t.prompt.new}
+                            </Link>
+                        )}
+                        {activeTab === 'collections' && (
+                            <button
+                                onClick={() => setIsCreateModalOpen(true)}
+                                className="px-4 py-2 bg-linear-to-r from-primary-base to-secondary-base text-white rounded-lg font-semibold hover:shadow-button transition-all text-sm"
+                            >
+                                {t.library.createCollection}
+                            </button>
+                        )}
+                    </div>
+
                     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                         {paginatedData.length === 0 ? (
                             <div className="col-span-full flex flex-col items-center justify-center py-20 bg-white/50 backdrop-blur-sm rounded-xl border border-dashed border-neutral-border-subtle">
@@ -111,6 +140,14 @@ export default function LibraryContent({ user }: LibraryContentProps) {
                                     >
                                         {t.prompt.new}
                                     </Link>
+                                )}
+                                {activeTab === 'collections' && (
+                                    <button
+                                        onClick={() => setIsCreateModalOpen(true)}
+                                        className="mt-4 px-6 py-2 bg-linear-to-r from-primary-base to-secondary-base text-white rounded-lg font-semibold hover:shadow-button transition-all"
+                                    >
+                                        {t.library.createCollection}
+                                    </button>
                                 )}
                             </div>
                         ) : (
@@ -277,6 +314,11 @@ export default function LibraryContent({ user }: LibraryContentProps) {
                     )}
                 </div>
             </main>
+
+            <CreateCollectionModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
         </div>
     )
 }

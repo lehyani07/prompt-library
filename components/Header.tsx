@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
 import { useState } from 'react'
 import { signOut } from 'next-auth/react'
@@ -11,7 +12,18 @@ interface HeaderProps {
 
 export default function Header({ user }: HeaderProps) {
     const { t, language, setLanguage } = useLanguage()
+    const router = useRouter()
     const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault()
+        if (searchQuery.trim()) {
+            router.push(`/explore?q=${encodeURIComponent(searchQuery)}`)
+            setSearchQuery('')
+            setIsMenuOpen(false)
+        }
+    }
 
     const toggleLanguage = () => {
         setLanguage(language === 'en' ? 'ar' : 'en')
@@ -54,6 +66,24 @@ export default function Header({ user }: HeaderProps) {
                         )}
                     </nav>
 
+                    {/* Search Bar (Desktop) */}
+                    <div className="hidden md:flex flex-1 max-w-sm mx-8">
+                        <form onSubmit={handleSearch} className="w-full relative">
+                            <input
+                                type="text"
+                                placeholder={t.common.search}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2 rounded-full border border-neutral-border-subtle bg-neutral-bg-soft focus:outline-none focus:ring-2 focus:ring-primary-base/20 focus:border-primary-base transition-all text-sm"
+                            />
+                            <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-text-secondary hover:text-primary-base">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
                     {/* Right Side Actions */}
                     <div className="hidden md:flex items-center gap-4">
 
@@ -63,6 +93,16 @@ export default function Header({ user }: HeaderProps) {
                                 <span className="text-sm font-medium text-neutral-text-primary">
                                     {user.name || user.email}
                                 </span>
+                                <Link
+                                    href="/settings"
+                                    className="p-2 text-neutral-text-secondary hover:text-primary-base transition-colors"
+                                    title={t.userSettings.title}
+                                >
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </Link>
                                 <button
                                     onClick={() => signOut()}
                                     className="px-4 py-2 text-sm font-semibold text-primary-base border border-primary-base rounded-lg hover:bg-primary-base hover:text-white transition-all duration-200"
@@ -138,6 +178,22 @@ export default function Header({ user }: HeaderProps) {
                 isMenuOpen && (
                     <div className="md:hidden bg-white border-t border-neutral-border-subtle">
                         <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                            <form onSubmit={handleSearch} className="mb-4 px-3">
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder={t.common.search}
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-2 rounded-lg border border-neutral-border-subtle bg-neutral-bg-soft focus:outline-none focus:ring-2 focus:ring-primary-base/20 focus:border-primary-base transition-all text-sm"
+                                    />
+                                    <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-text-secondary hover:text-primary-base">
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
                             <Link
                                 href="/"
                                 className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
@@ -174,12 +230,21 @@ export default function Header({ user }: HeaderProps) {
                                 </button>
 
                                 {user ? (
-                                    <button
-                                        onClick={() => signOut()}
-                                        className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-red-50"
-                                    >
-                                        {t.common.signOut}
-                                    </button>
+                                    <>
+                                        <button
+                                            onClick={() => signOut()}
+                                            className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-500 hover:bg-red-50"
+                                        >
+                                            {t.common.signOut}
+                                        </button>
+                                        <Link
+                                            href="/settings"
+                                            className="block px-3 py-2 rounded-md text-base font-medium text-neutral-text-secondary hover:text-primary-base hover:bg-neutral-bg-soft"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            {t.userSettings.title}
+                                        </Link>
+                                    </>
                                 ) : (
                                     <>
                                         <Link

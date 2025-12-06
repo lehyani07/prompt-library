@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { requireModerator } from "@/lib/auth/permissions"
 import { prisma } from "@/lib/prisma"
+import { adminUpdatePromptSchema } from "@/lib/validations/admin"
+import { ZodError } from "zod"
 
 // Update prompt
 export async function PATCH(
@@ -10,15 +12,25 @@ export async function PATCH(
     try {
         await requireModerator()
 
-        const data = await request.json()
+        const body = await request.json()
+
+        // Validate input with Zod
+        const validatedData = adminUpdatePromptSchema.parse(body)
 
         const prompt = await prisma.prompt.update({
             where: { id: params.id },
-            data
+            data: validatedData
         })
 
         return NextResponse.json(prompt)
     } catch (error) {
+        if (error instanceof ZodError) {
+            return NextResponse.json(
+                { error: "Validation failed", details: error.errors },
+                { status: 400 }
+            )
+        }
+
         return NextResponse.json(
             { error: "Failed to update prompt" },
             { status: 500 }

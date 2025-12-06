@@ -18,11 +18,11 @@ export default async function AdminLayout({
 
     return (
         <AdminPageWrapper>
-            <div className="h-screen bg-gray-50 flex overflow-hidden">
+            <div className="h-screen bg-neutral-bg-page flex overflow-hidden">
                 <AdminSidebar />
                 <AdminLayoutContent>
                     <AdminHeader />
-                    <main className="flex-1 p-8 overflow-y-auto bg-gray-50">
+                    <main className="flex-1 p-8 overflow-y-auto bg-neutral-bg-page">
                         {children}
                     </main>
                 </AdminLayoutContent>

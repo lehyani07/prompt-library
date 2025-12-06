@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { updatePromptSchema } from "@/lib/validations/prompt"
+import { ZodError } from "zod"
 
 // GET single prompt
 export async function GET(
@@ -83,17 +85,14 @@ export async function PUT(
             )
         }
 
-        const { title, content, description, isPublic, categoryId } = await request.json()
+        const body = await request.json()
+
+        // Validate input with Zod
+        const validatedData = updatePromptSchema.parse(body)
 
         const updatedPrompt = await prisma.prompt.update({
             where: { id: params.id },
-            data: {
-                title,
-                content,
-                description,
-                isPublic,
-                categoryId
-            },
+            data: validatedData,
             include: {
                 author: {
                     select: {
@@ -107,6 +106,13 @@ export async function PUT(
 
         return NextResponse.json(updatedPrompt)
     } catch (error) {
+        if (error instanceof ZodError) {
+            return NextResponse.json(
+                { error: "Validation failed", details: error.errors },
+                { status: 400 }
+            )
+        }
+
         return NextResponse.json(
             { error: "Failed to update prompt" },
             { status: 500 }

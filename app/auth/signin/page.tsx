@@ -40,7 +40,7 @@ export default function SignIn() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+        <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 p-4">
             <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-xl transition-all hover:shadow-2xl">
                 <div className="bg-blue-600 p-8 text-center">
                     <h2 className="text-3xl font-bold text-white">{t.auth.welcomeBack}</h2>
@@ -78,9 +78,9 @@ export default function SignIn() {
                                     <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                                         {t.auth.password}
                                     </label>
-                                    <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-500">
+                                    <Link href="/auth/forgot-password" className="text-sm font-medium text-blue-600 hover:text-blue-500">
                                         {t.auth.forgotPassword}
-                                    </a>
+                                    </Link>
                                 </div>
                                 <input
                                     id="password"

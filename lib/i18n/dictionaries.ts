@@ -92,6 +92,18 @@ export const dictionaries = {
             signingIn: "Signing in...",
             creatingAccount: "Creating account...",
             passwordMinLength: "Must be at least 6 characters long",
+            resetPassword: "Reset Password",
+            resetPasswordSubtitle: "Enter your email to receive instructions",
+            sendResetLink: "Send Reset Link",
+            checkEmail: "Check your email",
+            resetLinkSent: "We have sent a password reset link to",
+            backToSignIn: "Back to Sign In",
+            setNewPassword: "Set New Password",
+            setNewPasswordSubtitle: "Your new password must be different to previously used passwords",
+            newPassword: "New Password",
+            confirmPassword: "Confirm Password",
+            passwordsDoNotMatch: "Passwords do not match",
+            passwordTooShort: "Password must be at least 8 characters",
         },
         prompt: {
             new: "Create New Prompt",
@@ -138,6 +150,17 @@ export const dictionaries = {
             emptyPrompts: "You haven't created any prompts yet.",
             emptyFavorites: "You haven't favorited any prompts yet.",
             emptyCollections: "You haven't created any collections yet.",
+            createCollection: "Create Collection",
+            createCollectionModal: {
+                title: "Create New Collection",
+                nameLabel: "Collection Name",
+                descLabel: "Description (Optional)",
+                visibilityLabel: "Make Public",
+                submit: "Create Collection",
+                cancel: "Cancel",
+                success: "Collection created successfully!",
+                error: "Failed to create collection."
+            },
         },
         terms: {
             lastUpdated: "Last updated: December 1, 2025",
@@ -202,6 +225,36 @@ export const dictionaries = {
             successMessage: "Thank you! Your message has been sent successfully.",
             errorTitle: "Failed to Send Message",
             errorMessage: "An error occurred while sending your message. Please try again."
+        },
+        userSettings: {
+            title: "User Settings",
+            profile: "Profile Settings",
+            security: "Security",
+            dangerZone: "Danger Zone",
+            updateProfile: "Update Profile",
+            currentPassword: "Current Password",
+            newPassword: "New Password",
+            confirmNewPassword: "Confirm New Password",
+            changePassword: "Change Password",
+            deleteAccount: "Delete Account",
+            deleteAccountDesc: "Once you delete your account, there is no going back. Please be certain.",
+            deleteConfirm: "Are you sure you want to delete your account? This action cannot be undone.",
+            profileUpdated: "Profile updated successfully!",
+            passwordUpdated: "Password updated successfully!",
+            accountDeleted: "Your account has been deleted."
+        },
+        errors: {
+            notFound: {
+                title: "Page Not Found",
+                description: "The page you are looking for doesn't exist or has been moved.",
+                backHome: "Back to Home"
+            },
+            serverError: {
+                title: "Something went wrong!",
+                description: "We apologize for the inconvenience. We're working on it.",
+                retry: "Try again",
+                backHome: "Back to Home"
+            }
         },
         admin: {
             sidebar: {
@@ -270,6 +323,7 @@ export const dictionaries = {
                 noPrompts: "No prompts found",
                 showingResults: "Showing {from} to {to} of {total} results"
             },
+
             categories: {
                 title: "Categories Management",
                 name: "Name",
@@ -425,6 +479,18 @@ export const dictionaries = {
             signingIn: "جاري تسجيل الدخول...",
             creatingAccount: "جاري إنشاء الحساب...",
             passwordMinLength: "يجب أن تكون 6 أحرف على الأقل",
+            resetPassword: "إعادة تعيين كلمة المرور",
+            resetPasswordSubtitle: "أدخل بريدك الإلكتروني لتلقي التعليمات",
+            sendResetLink: "إرسال رابط إعادة التعيين",
+            checkEmail: "تفقد بريدك الإلكتروني",
+            resetLinkSent: "لقد أرسلنا رابط إعادة تعيين كلمة المرور إلى",
+            backToSignIn: "العودة لتسجيل الدخول",
+            setNewPassword: "تعيين كلمة مرور جديدة",
+            setNewPasswordSubtitle: "يجب أن تكون كلمة المرور الجديدة مختلفة عن المستخدمة سابقاً",
+            newPassword: "كلمة المرور الجديدة",
+            confirmPassword: "تأكيد كلمة المرور",
+            passwordsDoNotMatch: "كلمات المرور غير متطابقة",
+            passwordTooShort: "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
         },
         prompt: {
             new: "إنشاء برومبت جديد",
@@ -471,6 +537,17 @@ export const dictionaries = {
             emptyPrompts: "لم تقم بإنشاء أي برومبت بعد.",
             emptyFavorites: "لم تقم بإضافة أي برومبت للمفضلة بعد.",
             emptyCollections: "لم تقم بإنشاء أي مجموعات بعد.",
+            createCollection: "إنشاء مجموعة",
+            createCollectionModal: {
+                title: "إنشاء مجموعة جديدة",
+                nameLabel: "اسم المجموعة",
+                descLabel: "الوصف (اختياري)",
+                visibilityLabel: "جعلها عامة",
+                submit: "إنشاء المجموعة",
+                cancel: "إلغاء",
+                success: "تم إنشاء المجموعة بنجاح!",
+                error: "فشل إنشاء المجموعة."
+            },
         },
         terms: {
             lastUpdated: "آخر تحديث: 1 ديسمبر 2025",
@@ -535,6 +612,36 @@ export const dictionaries = {
             successMessage: "شكراً لك! تم إرسال رسالتك بنجاح.",
             errorTitle: "فشل إرسال الرسالة",
             errorMessage: "حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى."
+        },
+        userSettings: {
+            title: "إعدادات المستخدم",
+            profile: "إعدادات الملف الشخصي",
+            security: "الأمان",
+            dangerZone: "منطقة الخطر",
+            updateProfile: "تحديث الملف الشخصي",
+            currentPassword: " كلمة المرور الحالية",
+            newPassword: "كلمة المرور الجديدة",
+            confirmNewPassword: "تأكيد كلمة المرور الجديدة",
+            changePassword: "تغيير كلمة المرور",
+            deleteAccount: "حذف الحساب",
+            deleteAccountDesc: "بمجرد حذف حسابك، لا يمكن التراجع عن ذلك. يرجى التأكد.",
+            deleteConfirm: "هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.",
+            profileUpdated: "تم تحديث الملف الشخصي بنجاح!",
+            passwordUpdated: "تم تحديث كلمة المرور بنجاح!",
+            accountDeleted: "تم حذف حسابك."
+        },
+        errors: {
+            notFound: {
+                title: "الصفحة غير موجودة",
+                description: "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+                backHome: "العودة للرئيسية"
+            },
+            serverError: {
+                title: "حدث خطأ ما!",
+                description: "نعتذر عن الإزعاج. نحن نعمل على إصلاح المشكلة.",
+                retry: "حاول مرة أخرى",
+                backHome: "العودة للرئيسية"
+            }
         },
         admin: {
             sidebar: {
@@ -603,6 +710,7 @@ export const dictionaries = {
                 noPrompts: "لم يتم العثور على أي برومبت",
                 showingResults: "عرض {from} إلى {to} من {total} نتيجة"
             },
+
             categories: {
                 title: "إدارة التصنيفات",
                 name: "الاسم",

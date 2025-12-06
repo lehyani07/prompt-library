@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { rateLimitByIP } from "@/lib/rate-limit"
+import { ratingCommentSchema } from "@/lib/validations/admin"
+import { ZodError } from "zod"
 
 // GET - Get user's rating for a prompt
 export async function GET(
@@ -58,6 +61,17 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        // Rate limiting
+        const ip = request.headers.get("x-forwarded-for") || "unknown"
+        const { success } = await rateLimitByIP(ip)
+
+        if (!success) {
+            return NextResponse.json(
+                { error: "Too many requests. Please try again later." },
+                { status: 429 }
+            )
+        }
+
         const session = await auth()
 
         if (!session?.user?.email) {
@@ -69,15 +83,10 @@ export async function POST(
 
         const resolvedParams = await params
         const promptId = resolvedParams.id
-        const { value, comment } = await request.json()
+        const body = await request.json()
 
-        // Validate rating value
-        if (!value || value < 1 || value > 5) {
-            return NextResponse.json(
-                { error: "Rating must be between 1 and 5" },
-                { status: 400 }
-            )
-        }
+        // Validate input with Zod
+        const { value, comment } = ratingCommentSchema.parse(body)
 
         // Get user
         const user = await prisma.user.findUnique({
@@ -155,6 +164,13 @@ export async function POST(
             totalRatings: ratings.length
         })
     } catch (error) {
+        if (error instanceof ZodError) {
+            return NextResponse.json(
+                { error: "Validation failed", details: error.errors },
+                { status: 400 }
+            )
+        }
+
         console.error("Rating error:", error)
         return NextResponse.json(
             { error: "Failed to submit rating" },

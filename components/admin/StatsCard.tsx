@@ -23,17 +23,20 @@ export default function StatsCard({ title, value, change, icon }: StatsCardProps
     const Icon = icons[icon]
 
     return (
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-white/50 shadow-card p-6 hover:shadow-floating transition-shadow duration-300">
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-sm text-gray-600">{title}</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
+                    <p className="text-sm font-medium text-neutral-text-secondary">{title}</p>
+                    <p className="text-3xl font-bold text-neutral-text-primary mt-2">{value.toLocaleString()}</p>
                     {change && (
-                        <p className="text-sm text-green-600 mt-1">{change}</p>
+                        <p className="text-sm font-medium text-green-600 mt-1 flex items-center gap-1">
+                            <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
+                            {change}
+                        </p>
                     )}
                 </div>
-                <div className="bg-indigo-100 p-3 rounded-lg">
-                    <Icon className="h-8 w-8 text-indigo-600" />
+                <div className="bg-linear-to-br from-primary-base/10 to-secondary-base/10 p-3.5 rounded-xl border border-primary-base/5">
+                    <Icon className="h-7 w-7 text-primary-base" />
                 </div>
             </div>
         </div>
