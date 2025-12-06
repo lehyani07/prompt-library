@@ -46,6 +46,9 @@ export const dictionaries = {
             showing: "Showing",
             of: "of",
             reply: "Reply",
+            name: "Name",
+            date: "Date",
+            message: "Message",
         },
         categories: {
             artDesign: "Art & Design",
@@ -241,7 +244,11 @@ export const dictionaries = {
             deleteConfirm: "Are you sure you want to delete your account? This action cannot be undone.",
             profileUpdated: "Profile updated successfully!",
             passwordUpdated: "Password updated successfully!",
-            accountDeleted: "Your account has been deleted."
+            accountDeleted: "Your account has been deleted.",
+            loadError: "Failed to load profile",
+            updateError: "Failed to update profile",
+            passwordUpdateError: "Failed to update password",
+            deleteError: "Failed to delete account"
         },
         error: {
             title: "Something went wrong",
@@ -439,6 +446,9 @@ export const dictionaries = {
             showing: "عرض",
             of: "من",
             reply: "رد",
+            name: "الاسم",
+            date: "التاريخ",
+            message: "الرسالة",
         },
         categories: {
             artDesign: "الفن والتصميم",
@@ -634,7 +644,11 @@ export const dictionaries = {
             deleteConfirm: "هل أنت متأكد من حذف حسابك؟ لا يمكن التراجع عن هذا الإجراء.",
             profileUpdated: "تم تحديث الملف الشخصي بنجاح!",
             passwordUpdated: "تم تحديث كلمة المرور بنجاح!",
-            accountDeleted: "تم حذف حسابك."
+            accountDeleted: "تم حذف حسابك.",
+            loadError: "فشل تحميل الملف الشخصي",
+            updateError: "فشل تحديث الملف الشخصي",
+            passwordUpdateError: "فشل تحديث كلمة المرور",
+            deleteError: "فشل حذف الحساب"
         },
         error: {
             title: "حدث خطأ ما",

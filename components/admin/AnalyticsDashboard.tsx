@@ -5,7 +5,7 @@ import { useLanguage } from '@/lib/i18n/LanguageContext'
 import AnalyticsStatCard from '@/components/analytics/AnalyticsStatCard'
 import DailyStatsChart from '@/components/analytics/DailyStatsChart'
 import CategoryChart from '@/components/analytics/CategoryChart'
-import { LoadingSkeleton } from '@/components/ui/LoadingSkeleton'
+import LoadingSkeleton from '@/components/ui/LoadingSkeleton'
 
 interface AnalyticsData {
     overview: {

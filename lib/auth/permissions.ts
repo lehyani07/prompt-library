@@ -46,5 +46,6 @@ export async function hasPermission(requiredRole: "USER" | "MODERATOR" | "ADMIN"
     if (!user) return false
 
     const roleHierarchy = { USER: 0, MODERATOR: 1, ADMIN: 2 }
-    return roleHierarchy[user.role] >= roleHierarchy[requiredRole]
+    const userRole = user.role as keyof typeof roleHierarchy
+    return roleHierarchy[userRole] >= roleHierarchy[requiredRole]
 }

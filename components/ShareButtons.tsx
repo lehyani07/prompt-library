@@ -38,9 +38,9 @@ export default function ShareButtons({ title, description, url }: ShareButtonsPr
     }
 
     const shareNative = async () => {
-        if (navigator.share) {
+        if ((navigator as any).share) {
             try {
-                await navigator.share({
+                await (navigator as any).share({
                     title,
                     text: description,
                     url: shareUrl,
@@ -75,7 +75,7 @@ export default function ShareButtons({ title, description, url }: ShareButtonsPr
                     />
                     <div className="absolute top-full mt-2 right-0 z-50 bg-neutral-bg-card rounded-lg shadow-floating border border-neutral-border-subtle p-2 min-w-[200px]">
                         {/* Native Share (Mobile) */}
-                        {navigator.share && (
+                        {(navigator as any).share && (
                             <button
                                 onClick={shareNative}
                                 className="w-full flex items-center gap-3 px-3 py-2 hover:bg-neutral-bg-soft rounded-md transition-colors text-left"

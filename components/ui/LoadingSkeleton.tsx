@@ -1,8 +1,12 @@
-export default function LoadingSkeleton() {
+export default function LoadingSkeleton({ count = 1 }: { count?: number }) {
     return (
-        <div className="animate-pulse">
-            <div className="h-4 bg-neutral-bg-soft rounded w-3/4 mb-3"></div>
-            <div className="h-4 bg-neutral-bg-soft rounded w-1/2"></div>
+        <div className="space-y-4">
+            {[...Array(count)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                    <div className="h-4 bg-neutral-bg-soft rounded w-3/4 mb-3"></div>
+                    <div className="h-4 bg-neutral-bg-soft rounded w-1/2"></div>
+                </div>
+            ))}
         </div>
     )
 }
